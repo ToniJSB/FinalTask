@@ -5,24 +5,39 @@ import java.awt.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
-public class Calendar extends JPanel {
+public class CalendarPanel extends JPanel {
     private JComboBox<String> comboMonth;
+
     private JComboBox<Integer> comboYears;
+
     private LocalDate fechaActual;
+
     private JPanel panelCalendario;
-    private JPanel fullContainer;
+
     private JPanel calendarContainer;
+    private JPanel parent;
     private DailyPlan dailyPlan;
 
-    public Calendar() {
-        createDisplay();
+    public CalendarPanel(JPanel parent, DailyPlan dailyPlan) {
+        super();
+        this.parent = parent;
+        this.dailyPlan = dailyPlan;
+        instanceComponents();
+        setDisplay();
+
     }
 
+    public CalendarPanel(JPanel parent) {
+        super();
+        this.parent = parent;
+        this.dailyPlan = new DailyPlan(LocalDate.now());
+        instanceComponents();
+        setDisplay();
 
+    }
     private void createBoxYear(){
         comboYears = new JComboBox<>();
         for (int i = fechaActual.getYear() - 40; i <= fechaActual.getYear() + 1; i++) {
@@ -39,12 +54,13 @@ public class Calendar extends JPanel {
         comboMonth.setSelectedIndex(fechaActual.getMonthValue() - 1);
     }
 
-    private void createDisplay(){
-        fullContainer = new JPanel(new GridLayout(1,2));
+    private void instanceComponents(){
         calendarContainer = new JPanel(new BorderLayout());
+        panelCalendario = new JPanel(new GridLayout(0, 7));
 
-        setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+    }
 
+    private void setDisplay(){
         fechaActual = LocalDate.now();
 
         // Panel superior para seleccionar mes y año
@@ -61,20 +77,13 @@ public class Calendar extends JPanel {
         calendarContainer.add(panelSuperior, BorderLayout.NORTH);
 
         // Panel del calendario
-        panelCalendario = new JPanel(new GridLayout(0, 7));
         panelCalendario.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         panelCalendario.setBackground(Color.CYAN);
         calendarContainer.add(panelCalendario, BorderLayout.CENTER);
-        fullContainer.add(calendarContainer);
-        dailyPlan = new DailyPlan(fechaActual);
-        fullContainer.add(dailyPlan);
-        add(new JLabel("HOLA"));
-        add(fullContainer);
         actualizarCalendario();
     }
 
-
-    private void actualizarCalendario() {
+    public void actualizarCalendario() {
         panelCalendario.removeAll();
 
         // Llenar los días de la semana
@@ -87,9 +96,9 @@ public class Calendar extends JPanel {
         // Obtener el mes y año seleccionados
         int mesSeleccionado = comboMonth.getSelectedIndex() + 1;
         int anioSeleccionado = (int) comboYears.getSelectedItem();
-        YearMonth añoMesActual = YearMonth.of(anioSeleccionado, mesSeleccionado);
-        LocalDate primerDiaMes = añoMesActual.atDay(1);
-        LocalDate ultimoDiaMes = añoMesActual.atEndOfMonth();
+        YearMonth yearMonthActual = YearMonth.of(anioSeleccionado, mesSeleccionado);
+        LocalDate primerDiaMes = yearMonthActual.atDay(1);
+        LocalDate ultimoDiaMes = yearMonthActual.atEndOfMonth();
 
         // Llenar los días del mes anterior que aparecen en la primera semana
         DayOfWeek primerDiaSemana = primerDiaMes.getDayOfWeek();
@@ -119,7 +128,7 @@ public class Calendar extends JPanel {
         }
 
         // Llenar los días del mes siguiente que aparecen en la última semana
-        int celdasRestantes = 42 - (diasMesAnterior + añoMesActual.lengthOfMonth()); // 42 celdas en total (6 semanas)
+        int celdasRestantes = 42 - (diasMesAnterior + yearMonthActual.lengthOfMonth()); // 42 celdas en total (6 semanas)
         LocalDate fechaMesSiguiente = ultimoDiaMes.plusDays(1);
 
         for (int i = 0; i < celdasRestantes; i++) {
@@ -135,17 +144,12 @@ public class Calendar extends JPanel {
     }
 
     private void mostrarMensaje(LocalDate fecha) {
-        fullContainer.remove(dailyPlan);
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("EEEE");
+        parent.remove(dailyPlan);
 
-//        JOptionPane.showMessageDialog(this, "Fecha seleccionada: " + fecha.toString());
-        System.out.println(fecha.toString());
-        System.out.println(fecha);
         dailyPlan = new DailyPlan(fecha);
-        fullContainer.add(dailyPlan);
+        parent.add(dailyPlan);
 
         revalidate();
         repaint();
     }
-
 }

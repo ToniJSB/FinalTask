@@ -6,7 +6,7 @@ import java.util.Date;
 
 
 @Entity
-@Table(name = "Cita")
+@Table(name = "cita")
 public class Cita {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,14 +30,14 @@ public class Cita {
     private Date horaCita;
 
     @Column(name = "Estado")
-    private String estado;  // Podría usarse un Enum
+    private EstadoCita estado;  // Podría usarse un Enum
 
-    public Cita(Paciente paciente, Medico medico, Date fechaCita, Date horaCita, String estado) {
+    public Cita(Paciente paciente, Medico medico, Date fechaCita, Date horaCita) {
         this.paciente = paciente;
         this.medico = medico;
         this.fechaCita = fechaCita;
         this.horaCita = horaCita;
-        this.estado = estado;
+        this.estado = EstadoCita.PROGRAMADA;
     }
 
     public Long getIdCita() {
@@ -80,11 +80,22 @@ public class Cita {
         this.horaCita = horaCita;
     }
 
-    public String getEstado() {
+    public EstadoCita getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
-        this.estado = estado;
+
+
+    private void programarCita() {
+        this.estado = EstadoCita.PROGRAMADA;
+    }
+
+    private void reprogramarCita() {
+        this.estado = EstadoCita.REPROGRAMADA;
+
+    }
+
+    private void cancelarCita() {
+        this.estado = EstadoCita.CANCELADA;
     }
 }

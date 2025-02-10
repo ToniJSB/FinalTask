@@ -3,7 +3,7 @@ package org.example.models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Medico")
+@Table(name = "medico")
 public class Medico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,3 +20,8 @@ public class Medico {
     private String especialidad;
 
 }
+
+
+
+
+

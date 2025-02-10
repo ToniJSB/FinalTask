@@ -2,8 +2,10 @@ package org.example.models;
 
 import jakarta.persistence.*;
 
+import javax.crypto.spec.OAEPParameterSpec;
+
 @Entity
-@Table(name = "Paciente")
+@Table(name = "paciente")
 public class Paciente {
 
     @Id
@@ -36,7 +38,9 @@ public class Paciente {
     @Column(name = "Telefono")
     private int telefono;
 
-    public Paciente(String nombre, String apellido1, String apellido2, String dni, String email, String password, String direccion, int telefono) {
+
+    public Paciente(){}
+    public Paciente(String nombre, String apellido1, String apellido2, String dni, String email, String password, String direccion) {
         this.nombre = nombre;
         this.apellido1 = apellido1;
         this.apellido2 = apellido2;
@@ -44,7 +48,7 @@ public class Paciente {
         this.email = email;
         this.password = password;
         this.direccion = direccion;
-        this.telefono = telefono;
+//        this.telefono = telefono;
     }
 
     public int getIdPaciente() {

@@ -5,6 +5,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Base64;
 
 public class Utils {
     public static Image getLogo(){
@@ -22,5 +26,30 @@ public class Utils {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+
+
+    public static class Password {
+
+
+        // Encriptar la contraseña con SHA-256 y salt
+        public static String encriptarPassword(String password) {
+            try {
+                MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                byte[] hashedPassword = digest.digest(password.getBytes());
+                return Base64.getEncoder().encodeToString(hashedPassword);
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException("Error al encriptar la contraseña", e);
+            }
+        }
+
+        // Verificar la contraseña
+        public static boolean verificarPassword(String password, String hashedPassword) {
+            String nuevoHash = encriptarPassword(password);
+            return nuevoHash.equals(hashedPassword);
+        }
+
     }
 }

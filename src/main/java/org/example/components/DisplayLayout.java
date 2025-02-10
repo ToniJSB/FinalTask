@@ -79,13 +79,11 @@ public class DisplayLayout extends JPanel{
         Image scaledImage = logo.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
         ImageIcon imageIcon = new ImageIcon(scaledImage);
 
-        JLabel logoLabel = new JLabel(imageIcon);
-        logoLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        JLabel logoLabel = new JLabel("Hospital Tramuntana",imageIcon,SwingConstants.LEFT);
 
-        top.add(new JLabel("Hospital Tramuntana"));
         top.setBorder(new MatteBorder(-1,-1,2,-1,Color.BLACK));
-
         top.add(logoLabel);
+
     }
 
     private void setFooter(){

@@ -1,20 +1,24 @@
 package org.example.components;
 
+import org.example.service.ServicePaciente;
+import org.hibernate.Session;
+
 import javax.swing.*;
-import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.time.LocalDate;
-import java.util.Date;
 
 public class Profile extends JPanel {
+    private ServicePaciente pacienteServ;
     private String dni;
     private String name;
     private String surname1;
     private String surname2;
     private LocalDate birthdate;
-    public Profile() {
-        super();
 
+
+    public Profile(Session session) {
+        super();
+        pacienteServ = new ServicePaciente(session);
         name = "Paco";
         surname1 = "Diaz";
         surname2 = "Puentes";
