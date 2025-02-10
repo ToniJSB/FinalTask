@@ -24,6 +24,7 @@ public class App {
         openSession();
         frame.add(initRouting(session));
         frame.setVisible(true);
+
         frame.addWindowListener(new WindowListener() {
             @Override
             public void windowOpened(WindowEvent e) {

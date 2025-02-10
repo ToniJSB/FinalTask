@@ -1,6 +1,7 @@
 package org.example.components;
 
 import org.example.Constants;
+import org.example.Utils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,15 +18,14 @@ public class DailyPlan extends JPanel {
         setDisplay();
     }
 
-    private DateTimeFormatter getDayFormatter(){
-        return DateTimeFormatter.ofPattern("EEEE - dd/MM/yyyy");
-
-    }
 
     private void setDisplay() {
         // Panel que contendrá el título y el scroll
         JPanel container = new JPanel(new BorderLayout());
-        container.setBorder(BorderFactory.createTitledBorder(dayDate.format(getDayFormatter())));
+        String dateFormat = String.format("EEEE - %s",Constants.SIMPLE_DATE_FORMAT);
+        container.setBorder(
+                BorderFactory.createTitledBorder(
+                        dayDate.format(Utils.getDayFormatter(dateFormat))));
 
         // Panel interno con celdas (usará BoxLayout para mejor manejo de tamaño)
         JPanel gridDay = new JPanel();

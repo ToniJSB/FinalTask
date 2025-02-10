@@ -138,6 +138,7 @@ public class SignIn extends JPanel {
 
     private void cancelarAction(ActionEvent e) {
         limpiarCampos();
+        initLayout.show(mainPanel,"LOGIN");
     }
 
     private boolean validarCampos() {

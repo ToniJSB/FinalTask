@@ -8,9 +8,14 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 
 public class Utils {
+    public static DateTimeFormatter getDayFormatter(String format){
+        return DateTimeFormatter.ofPattern(format);
+
+    }
     public static Image getLogo(){
         try{
             File file = new File("./src/main/resources/img.png");

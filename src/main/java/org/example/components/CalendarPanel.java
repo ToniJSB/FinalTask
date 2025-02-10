@@ -1,5 +1,8 @@
 package org.example.components;
 
+import org.example.Constants;
+import org.example.Utils;
+
 import javax.swing.*;
 import java.awt.*;
 import java.time.DayOfWeek;
@@ -14,28 +17,30 @@ public class CalendarPanel extends JPanel {
     private JComboBox<Integer> comboYears;
 
     private LocalDate fechaActual;
-
+    private JFrame window;
     private JPanel panelCalendario;
-
     private JPanel calendarContainer;
     private JPanel parent;
     private DailyPlan dailyPlan;
+    private JTextField bDateField;
 
     public CalendarPanel(JPanel parent, DailyPlan dailyPlan) {
         super();
         this.parent = parent;
         this.dailyPlan = dailyPlan;
         instanceComponents();
-        setDisplay();
+        setDisplayDaily();
 
     }
 
-    public CalendarPanel(JPanel parent) {
+    public CalendarPanel(JTextField birtdayDateField) {
         super();
-        this.parent = parent;
-        this.dailyPlan = new DailyPlan(LocalDate.now());
+        window = new JFrame("Birtday Date");
+        bDateField = birtdayDateField;
         instanceComponents();
         setDisplay();
+        window.add(calendarContainer);
+        window.setVisible(true);
 
     }
     private void createBoxYear(){
@@ -80,6 +85,31 @@ public class CalendarPanel extends JPanel {
         panelCalendario.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         panelCalendario.setBackground(Color.CYAN);
         calendarContainer.add(panelCalendario, BorderLayout.CENTER);
+        add(calendarContainer);
+        actualizarCalendario();
+    }
+
+    private void setDisplayDaily(){
+        fechaActual = LocalDate.now();
+
+        // Panel superior para seleccionar mes y año
+        JPanel panelSuperior = new JPanel();
+        createBoxMonths();
+        panelSuperior.add(comboMonth);
+        createBoxYear();
+        panelSuperior.add(comboYears);
+
+        JButton botonActualizar = new JButton("Cargar fecha");
+        botonActualizar.addActionListener(e -> actualizarCalendario());
+        panelSuperior.add(botonActualizar);
+
+        calendarContainer.add(panelSuperior, BorderLayout.NORTH);
+
+        // Panel del calendario
+        panelCalendario.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        panelCalendario.setBackground(Color.CYAN);
+        calendarContainer.add(panelCalendario, BorderLayout.CENTER);
+        add(calendarContainer);
         actualizarCalendario();
     }
 
@@ -94,9 +124,9 @@ public class CalendarPanel extends JPanel {
         }
 
         // Obtener el mes y año seleccionados
-        int mesSeleccionado = comboMonth.getSelectedIndex() + 1;
-        int anioSeleccionado = (int) comboYears.getSelectedItem();
-        YearMonth yearMonthActual = YearMonth.of(anioSeleccionado, mesSeleccionado);
+        int monthSelected = comboMonth.getSelectedIndex() + 1;
+        int yearSelected = (int) comboYears.getSelectedItem();
+        YearMonth yearMonthActual = YearMonth.of(yearSelected, monthSelected);
         LocalDate primerDiaMes = yearMonthActual.atDay(1);
         LocalDate ultimoDiaMes = yearMonthActual.atEndOfMonth();
 
@@ -121,8 +151,12 @@ public class CalendarPanel extends JPanel {
                 boton.setBackground(Color.YELLOW); // Resaltar el día actual
             }
             LocalDate finalFechaActual = fechaActual;
+            if(dailyPlan == null){
+                boton.addActionListener(e -> getBDate(finalFechaActual));
+            }else {
+                boton.addActionListener(e -> showDailyPlan(finalFechaActual));
+            }
 
-            boton.addActionListener(e -> mostrarMensaje(finalFechaActual));
             panelCalendario.add(boton);
             fechaActual = fechaActual.plusDays(1);
         }
@@ -143,7 +177,12 @@ public class CalendarPanel extends JPanel {
         panelCalendario.repaint();
     }
 
-    private void mostrarMensaje(LocalDate fecha) {
+    private void getBDate(LocalDate fecha) {
+
+        bDateField.setText(fecha.format(Utils.getDayFormatter(Constants.SIMPLE_DATE_FORMAT)));
+        window.dispose();
+    }
+    private void showDailyPlan(LocalDate fecha) {
         parent.remove(dailyPlan);
 
         dailyPlan = new DailyPlan(fecha);
