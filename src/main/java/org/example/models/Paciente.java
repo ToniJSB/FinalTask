@@ -3,6 +3,7 @@ package org.example.models;
 import jakarta.persistence.*;
 
 import javax.crypto.spec.OAEPParameterSpec;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "paciente")
@@ -35,12 +36,17 @@ public class Paciente {
     @Column(name = "direccion")
     private String direccion;
 
-    @Column(name = "Telefono")
+    @Column(name = "telefono")
     private int telefono;
+
+    @Column(name = "fecha_nacimiento")
+    private LocalDate bDate;
+
+
 
 
     public Paciente(){}
-    public Paciente(String nombre, String apellido1, String apellido2, String dni, String email, String password, String direccion) {
+    public Paciente(String nombre, String apellido1, String apellido2, String dni, String email, String password, String direccion, LocalDate birthDate) {
         this.nombre = nombre;
         this.apellido1 = apellido1;
         this.apellido2 = apellido2;
@@ -48,7 +54,8 @@ public class Paciente {
         this.email = email;
         this.password = password;
         this.direccion = direccion;
-//        this.telefono = telefono;
+        bDate = birthDate;
+        this.telefono = telefono;
     }
 
     public int getIdPaciente() {
@@ -118,4 +125,13 @@ public class Paciente {
     public void setTelefono(int telefono) {
         this.telefono = telefono;
     }
+
+    public LocalDate getbDate() {
+        return bDate;
+    }
+
+    public void setbDate(LocalDate bDate) {
+        this.bDate = bDate;
+    }
+
 }

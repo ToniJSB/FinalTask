@@ -8,8 +8,13 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.regex.Pattern;
 
 public class Utils {
     public static DateTimeFormatter getDayFormatter(String format){
@@ -33,7 +38,85 @@ public class Utils {
         }
     }
 
+    public static class DateFormat{
+        private static final String RARE_REGEX_PARTIAL = "^[0-9]|/";
+        private static final String DATE_REGEX_PARTIAL = "^(0[1-9]|[12][0-9]|3[01])2?/?([01][0-9])?/?((19|20)2?[0-9]{0,2})4?$";
+        private static final String DATE_REGEX_FULL = "^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/((19|20)\\d\\d)$";
+        private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
+
+
+        // Validación incremental (carácter por carácter)
+        public static boolean isPartialDateValid(String partialDate) {
+            return Pattern.matches(RARE_REGEX_PARTIAL, partialDate);
+        }
+
+        // Validación completa
+        public static boolean isFullDateValid(String dateStr) {
+            if (!Pattern.matches(DATE_REGEX_FULL, dateStr)) {
+                return false;
+            }
+
+            try {
+                DATE_FORMAT.setLenient(false);
+                Date date = DATE_FORMAT.parse(dateStr);
+                Date currentDate = new Date();
+
+                // Calcular la fecha de ayer
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(currentDate);
+                calendar.add(Calendar.DAY_OF_MONTH, -1);
+                Date yesterday = calendar.getTime();
+
+                // Calcular la fecha de 100 años atrás
+                calendar.add(Calendar.YEAR, -100);
+                Date hundredYearsAgo = calendar.getTime();
+
+                // Validar que la fecha esté entre 100 años atrás y ayer
+                if (date.before(hundredYearsAgo) || date.after(yesterday)) {
+                    return false;
+                }
+
+                // Validar los días del mes según el mes y el año
+                String[] parts = dateStr.split("/");
+                int day = Integer.parseInt(parts[0]);
+                int month = Integer.parseInt(parts[1]);
+                int year = Integer.parseInt(parts[2]);
+
+                return isValidDayForMonth(day, month, year);
+            } catch (ParseException e) {
+                return false;
+            }
+        }
+
+        public static boolean isValidDayForMonth(int day, int month, int year) {
+            if (month < 1 || month > 12) {
+                return false;
+            }
+
+            // Validar febrero y años bisiestos
+            if (month == 2) {
+                if (isLeapYear(year)) {
+                    return day <= 29;
+                } else {
+                    return day <= 28;
+                }
+            }
+
+            // Validar meses con 30 o 31 días
+            if (month == 4 || month == 6 || month == 9 || month == 11) {
+                return day <= 30;
+            } else {
+                return day <= 31;
+            }
+        }
+
+        public static boolean isLeapYear(int year) {
+            // Un año es bisiesto si es divisible por 4, pero no por 100, a menos que también sea divisible por 400
+            return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+        }
+
+    }
 
 
     public static class Password {

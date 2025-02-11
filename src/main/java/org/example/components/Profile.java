@@ -1,5 +1,6 @@
 package org.example.components;
 
+import org.example.App;
 import org.example.service.ServicePaciente;
 import org.hibernate.Session;
 
@@ -19,12 +20,13 @@ public class Profile extends JPanel {
     public Profile(Session session) {
         super();
         pacienteServ = new ServicePaciente(session);
-        name = "Paco";
-        surname1 = "Diaz";
-        surname2 = "Puentes";
-        dni = "97438263K";
-        birthdate = LocalDate.now();
+        name = DisplayLayout.pacienteSession.getNombre();
+        surname1 = DisplayLayout.pacienteSession.getApellido1();
+        surname2 = DisplayLayout.pacienteSession.getApellido2();
+        dni = DisplayLayout.pacienteSession.getDni();
+        birthdate = DisplayLayout.pacienteSession.getbDate();
         setDisplay();
+
 
     }
     private void setDisplay(){

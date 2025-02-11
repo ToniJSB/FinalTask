@@ -2,18 +2,21 @@ package org.example;
 
 import org.example.components.*;
 import org.example.dao.AccessDB;
+import org.example.models.Paciente;
 import org.hibernate.Session;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.time.LocalDate;
 
 public class App {
     private AccessDB accessDB;
-    private Session session;
+    private Session dbSession;
 
     public App() {
+
         JFrame frame = new JFrame("Acceso: Hospital tramuntana");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -22,7 +25,7 @@ public class App {
         System.out.println(frame.getIconImage());
         accessDB = new AccessDB();
         openSession();
-        frame.add(initRouting(session));
+        frame.add(initRouting(dbSession));
         frame.setVisible(true);
 
         frame.addWindowListener(new WindowListener() {
@@ -64,10 +67,10 @@ public class App {
 
     }
     private void closeSession(){
-        session.close();
+        dbSession.close();
     }
     private void openSession(){
-        session = accessDB.getSessionFactory();
+        dbSession = accessDB.getSessionFactory();
     }
 
 
@@ -78,20 +81,15 @@ public class App {
         CardLayout cardLayout = new CardLayout();
         JPanel mainPanel = new JPanel(cardLayout);
 
-        JButton[] botones = {new JButton("Informes"), new JButton("Medicos"), new JButton("Perfil"), new JButton("Calendario")};
-        DisplayLayout displayLayout =  new DisplayLayout(cardLayout,botones);
 
-        LogIn loginPanel =  new LogIn(mainPanel,cardLayout);
+        LogIn loginPanel =  new LogIn(mainPanel,cardLayout,session);
         SignIn signInPanel = new SignIn(mainPanel,cardLayout,session);
-        Profile profile = new Profile(session);
-        Calendar calendario = new Calendar();
 
-        displayLayout.appendBody(profile,"PERFIL");
-        displayLayout.appendBody(calendario, "CALENDARIO");
+        // Cambiar el flujo. Ha de ir desde el login a Display
+
 
         mainPanel.add(signInPanel,"SIGNIN");
         mainPanel.add(loginPanel,"LOGIN");
-        mainPanel.add(displayLayout,"DISPLAY");
 
         cardLayout.show(mainPanel,"LOGIN");
 

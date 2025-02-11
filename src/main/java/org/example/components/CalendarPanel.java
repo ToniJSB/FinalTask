@@ -39,6 +39,8 @@ public class CalendarPanel extends JPanel {
         bDateField = birtdayDateField;
         instanceComponents();
         setDisplay();
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setSize(600,400);
         window.add(calendarContainer);
         window.setVisible(true);
 

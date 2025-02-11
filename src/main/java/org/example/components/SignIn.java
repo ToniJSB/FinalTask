@@ -8,6 +8,8 @@ import org.hibernate.Session;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.Dictionary;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
@@ -25,6 +27,8 @@ public class SignIn extends JPanel {
     private JPasswordField txtPassword;
     private JTextField txtDireccion;
     private JTextField txtTelefono;
+    private JTextField txtBirdthDayDate;
+    private CalendarPanel calendarPanel;
 
     private JButton btnGuardar;
     private JButton btnCancelar;
@@ -38,6 +42,7 @@ public class SignIn extends JPanel {
         this.mainPanel = mainPanel;
         this.initLayout = initLayout;
         initComponents();
+        calendarPanel = new CalendarPanel(txtBirdthDayDate);
         setupLayout();
         setupDocumentFilters();
     }
@@ -54,6 +59,7 @@ public class SignIn extends JPanel {
         txtPassword = new JPasswordField(20);
         txtDireccion = new JTextField(20);
         txtTelefono = new JTextField(9);
+        txtBirdthDayDate = new JTextField(10);
 
         btnGuardar = new JButton("Guardar");
         btnCancelar = new JButton("Cancelar");
@@ -80,6 +86,7 @@ public class SignIn extends JPanel {
         addField(gbc, row++, "Password*:", txtPassword);
         addField(gbc, row++, "Dirección:", txtDireccion);
         addField(gbc, row++, "Teléfono:", txtTelefono);
+        addField(gbc, row++, "Fecha de nacimiento:", txtBirdthDayDate);
 
         gbc.gridx = 0;
         gbc.gridy = row;
@@ -98,10 +105,26 @@ public class SignIn extends JPanel {
         gbc.weightx = 0;
         container.add(new JLabel(label), gbc);
 
-        gbc.gridx = 1;
-        gbc.weightx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        container.add(field, gbc);
+
+        if (!label.equals("Fecha de nacimiento:")){
+            gbc.gridx = 1;
+            gbc.weightx = 1;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            container.add(field, gbc);
+        }else{
+            JPanel calendarContainer = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            JButton openCalendar = new JButton("Abrir calendario");
+            openCalendar.addActionListener(e -> new CalendarPanel((JTextField) field));
+
+            calendarContainer.add(field);
+            calendarContainer.add(openCalendar);
+            gbc.gridx = 1;
+            gbc.weightx = 1;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            container.add(calendarContainer, gbc);
+
+        }
+
     }
 
     private void setupDocumentFilters() {
@@ -110,12 +133,15 @@ public class SignIn extends JPanel {
 
         // Filtro para teléfono (solo números)
         ((AbstractDocument) txtTelefono.getDocument()).setDocumentFilter(new NumericDocumentFilter());
+        // Filtro para teléfono (solo fechas válidas)
+        ((AbstractDocument) txtBirdthDayDate.getDocument()).setDocumentFilter(new DateDocumentFilter());
     }
 
     private void guardarAction(ActionEvent e) {
         if (!validarCampos()) {
             return;
         }
+        String[] bDateSplit = txtBirdthDayDate.getText().split("/");
         boolean created = servicePaciente.createPaciente(
                 txtNombre.getText(),
                 txtApellido1.getText(),
@@ -124,7 +150,12 @@ public class SignIn extends JPanel {
                 txtEmail.getText(),
                 Utils.Password.encriptarPassword(new String(txtPassword.getPassword())),
                 txtDireccion.getText(),
-                txtTelefono.getText());
+                txtTelefono.getText(),
+                LocalDate.of(
+                        Integer.parseInt(bDateSplit[2]),
+                        Integer.parseInt(bDateSplit[1]),
+                        Integer.parseInt(bDateSplit[0]))
+                );
         if (created){
             JOptionPane.showMessageDialog(this, "Paciente guardado:\n" + txtNombre.getText());
             initLayout.show(mainPanel,"LOGIN");
@@ -163,6 +194,14 @@ public class SignIn extends JPanel {
             return false;
         }
 
+        if (!Utils.DateFormat.isFullDateValid(txtBirdthDayDate.getText())) {
+            JOptionPane.showMessageDialog(this,
+                    "La fecha de nacimiento no es válida o está fuera del rango permitido.",
+                    "Validación",
+                    JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
         return true;
     }
 
@@ -176,6 +215,7 @@ public class SignIn extends JPanel {
         txtPassword.setText("");
         txtDireccion.setText("");
         txtTelefono.setText("");
+        txtBirdthDayDate.setText("");
     }
 
     public void setPaciente(Paciente paciente) {
@@ -250,4 +290,24 @@ public class SignIn extends JPanel {
         }
     }
 
+    private static class DateDocumentFilter extends DocumentFilter {
+        @Override
+        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
+                throws BadLocationException {
+            String newText = fb.getDocument().getText(0, fb.getDocument().getLength()) + string;
+            if (Utils.DateFormat.isPartialDateValid(newText)) {
+                super.insertString(fb, offset, string, attr);
+            }
+        }
+
+        @Override
+        public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
+                throws BadLocationException {
+            String currentText = fb.getDocument().getText(0, fb.getDocument().getLength());
+            String newText = currentText.substring(0, offset) + text + currentText.substring(offset + length);
+            if (Utils.DateFormat.isFullDateValid(newText)) {
+                super.replace(fb, offset, length, text, attrs);
+            }
+        }
+    }
 }

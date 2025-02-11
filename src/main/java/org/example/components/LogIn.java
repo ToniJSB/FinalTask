@@ -1,5 +1,10 @@
 package org.example.components;
 
+import org.example.App;
+import org.example.models.Paciente;
+import org.example.service.ServicePaciente;
+import org.hibernate.Session;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -19,16 +24,21 @@ public class LogIn  extends JPanel {
     private JTextField passwordField;
     private JButton registrarButton;
     private JButton iniciarSesionButton;
+    private ServicePaciente servicePaciente;
+    private JPanel initPanel;
+    private CardLayout initLayout;
+    private Session dbSession;
 
-    public LogIn(JPanel mainPanel, CardLayout mainLayout) throws HeadlessException {
+    public LogIn(JPanel mainPanel, CardLayout mainLayout, Session session) throws HeadlessException {
         super();
 //        setLoginFormPanel();
+        dbSession = session;
+        servicePaciente = new ServicePaciente(session);
         setDisplay();
+        initPanel = mainPanel;
+        initLayout = mainLayout;
         setActionsButtons(mainPanel, mainLayout);
     }
-
-
-
 
     private JPanel setDisplay(){
         JPanel innerContainer = new JPanel();
@@ -120,11 +130,34 @@ public class LogIn  extends JPanel {
         }
     }
 
+    private boolean login(){
+        String email = emailField.getText();
+        String password = passwordField.getText();
+        Paciente pacienteLogged = servicePaciente.getPacienteByEmail(email);
+        boolean result = false;
+        if (servicePaciente.isValidPassowrd(password,pacienteLogged.getPassword())){
+            JButton[] botones = {new JButton("Informes"), new JButton("Medicos"), new JButton("Perfil"), new JButton("Calendario")};
+
+            DisplayLayout.pacienteSession = pacienteLogged;
+            DisplayLayout displayLayout =  new DisplayLayout(initLayout,botones);
+            Profile profile = new Profile(dbSession);
+            Calendar calendario = new Calendar();
+
+            displayLayout.appendBody(profile,"PERFIL");
+            displayLayout.appendBody(calendario, "CALENDARIO");
+            initPanel.add(displayLayout,"DISPLAY");
+            result = true;
+        }
+        return result;
+    }
+
     private void setActionsButtons(JPanel mainPanel, CardLayout mainLayout){
         iniciarSesionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainLayout.show(mainPanel,"DISPLAY");
+                if(login()){
+                    mainLayout.show(mainPanel,"DISPLAY");
+                }
             }
         });
         registrarButton.addActionListener(new ActionListener() {

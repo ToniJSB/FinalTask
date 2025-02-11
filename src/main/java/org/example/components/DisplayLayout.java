@@ -1,6 +1,7 @@
 package org.example.components;
 
 import org.example.Utils;
+import org.example.models.Paciente;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -19,6 +20,8 @@ public class DisplayLayout extends JPanel{
     private JPanel bottom;
     private JPanel top;
     private final JButton[] asideButtons;
+    public static Paciente pacienteSession;
+
 
 
     public DisplayLayout(LayoutManager layout, JButton[] buttons) {
