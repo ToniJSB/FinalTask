@@ -21,7 +21,7 @@ public class LogIn  extends JPanel {
     private JPanel passwordPanel;
     private JLabel emailLabel;
     private JLabel passwordLabel;
-    private JTextField passwordField;
+    private JPasswordField passwordField;
     private JButton registrarButton;
     private JButton iniciarSesionButton;
     private ServicePaciente servicePaciente;
@@ -71,7 +71,7 @@ public class LogIn  extends JPanel {
 
         passwordPanel = new JPanel();
         passwordLabel = new JLabel("Password");
-        passwordField = new JTextField();
+        passwordField = new JPasswordField(20);
 
         buttonsFormPanel = new JPanel();
         registrarButton = new JButton("Registrar");
@@ -132,7 +132,7 @@ public class LogIn  extends JPanel {
 
     private boolean login(){
         String email = emailField.getText();
-        String password = passwordField.getText();
+        String password = new String(passwordField.getPassword());
         Paciente pacienteLogged = servicePaciente.getPacienteByEmail(email);
         boolean result = false;
         if (servicePaciente.isValidPassowrd(password,pacienteLogged.getPassword())){
@@ -141,7 +141,7 @@ public class LogIn  extends JPanel {
             DisplayLayout.pacienteSession = pacienteLogged;
             DisplayLayout displayLayout =  new DisplayLayout(initLayout,botones);
             Profile profile = new Profile(dbSession);
-            Calendar calendario = new Calendar();
+            Calendar calendario = new Calendar(dbSession);
 
             displayLayout.appendBody(profile,"PERFIL");
             displayLayout.appendBody(calendario, "CALENDARIO");

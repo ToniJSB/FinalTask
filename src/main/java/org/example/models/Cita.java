@@ -17,15 +17,15 @@ public class Cita {
     @JoinColumn(name = "ID_Paciente")
     private Paciente paciente;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ID_Medico")
     private Medico medico;
 
-    @Column(name = "Fecha_Cita")
+    @Column(name = "fecha_cita")
     @Temporal(TemporalType.DATE)
     private Date fechaCita;
 
-    @Column(name = "Hora_Cita")
+    @Column(name = "hora_cita")
     @Temporal(TemporalType.TIME)
     private Date horaCita;
 

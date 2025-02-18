@@ -30,30 +30,34 @@ public class Profile extends JPanel {
 
     }
     private void setDisplay(){
-        JPanel container = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        add(container);
+        JPanel container = new JPanel();
+        JPanel infoContainer = new JPanel(new GridLayout(2,1));
+        infoContainer.setBorder(BorderFactory.createTitledBorder("Información personal"));
         JPanel panelFullName = createPanelFullName();
         JPanel panelBirthdate = new JPanel();
         JLabel labelBirthdate = new JLabel(birthdate.toString());
 
         panelBirthdate.add(labelBirthdate);
 
-        container.add(panelFullName);
-        container.add(panelBirthdate);
+        infoContainer.add(panelFullName);
+        infoContainer.add(panelBirthdate);
+
+        container.add(infoContainer);
+        add(container);
     }
 
     private JPanel createPanelFullName(){
-        JPanel panelFullName = new JPanel(new GridLayout(1,2));
+        JPanel panelFullName = new JPanel(new GridLayout(2,1));
         JPanel panelName = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel labelName = new JLabel(name);
+        JLabel labelName = new JLabel("Nombre: "+name);
 
         JPanel panelSurname = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JLabel labelSurname1 = new JLabel(surname1);
-        JLabel labelSurname2 = new JLabel(surname2);
+        JLabel labelSurname1 = new JLabel("Apellidos: %s %s".formatted(surname1,surname2));
+//        JLabel labelSurname2 = new JLabel(surname2);
 
         panelName.add(labelName);
         panelSurname.add(labelSurname1);
-        panelSurname.add(labelSurname2);
+//        panelSurname.add(labelSurname2);
         panelFullName.add(panelName);
         panelFullName.add(panelSurname);
 

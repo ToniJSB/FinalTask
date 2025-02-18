@@ -2,6 +2,9 @@ package org.example.components;
 
 import org.example.Constants;
 import org.example.Utils;
+import org.example.models.Medico;
+import org.example.service.ServiceCita;
+import org.hibernate.Session;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +12,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.TextStyle;
+import java.util.Date;
 import java.util.Locale;
 
 public class CalendarPanel extends JPanel {
@@ -23,11 +27,13 @@ public class CalendarPanel extends JPanel {
     private JPanel parent;
     private DailyPlan dailyPlan;
     private JTextField bDateField;
+    private ServiceCita serviceCita;
 
-    public CalendarPanel(JPanel parent, DailyPlan dailyPlan) {
+    public CalendarPanel(JPanel parent, DailyPlan dailyPlan, Session session) {
         super();
         this.parent = parent;
         this.dailyPlan = dailyPlan;
+        serviceCita = new ServiceCita(session);
         instanceComponents();
         setDisplayDaily();
 
@@ -42,9 +48,12 @@ public class CalendarPanel extends JPanel {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setSize(600,400);
         window.add(calendarContainer);
-        window.setVisible(true);
-
+        setVisible(true);
     }
+    public void setVisible(boolean isVisible){
+        window.setVisible(isVisible);
+    }
+
     private void createBoxYear(){
         comboYears = new JComboBox<>();
         for (int i = fechaActual.getYear() - 40; i <= fechaActual.getYear() + 1; i++) {
@@ -182,12 +191,13 @@ public class CalendarPanel extends JPanel {
     private void getBDate(LocalDate fecha) {
 
         bDateField.setText(fecha.format(Utils.getDayFormatter(Constants.SIMPLE_DATE_FORMAT)));
+        setVisible(false);
         window.dispose();
     }
     private void showDailyPlan(LocalDate fecha) {
         parent.remove(dailyPlan);
-
-        dailyPlan = new DailyPlan(fecha);
+        Date date = Utils.DateFormat.asDate(fecha);
+        dailyPlan = new DailyPlan(date, serviceCita.askCitasByDay(Utils.DateFormat.asDate(fechaActual)),serviceCita);
         parent.add(dailyPlan);
 
         revalidate();

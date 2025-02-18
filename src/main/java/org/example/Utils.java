@@ -10,6 +10,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Calendar;
@@ -37,12 +41,12 @@ public class Utils {
             throw new RuntimeException(e);
         }
     }
-
     public static class DateFormat{
         private static final String RARE_REGEX_PARTIAL = "^[0-9]|/";
         private static final String DATE_REGEX_PARTIAL = "^(0[1-9]|[12][0-9]|3[01])2?/?([01][0-9])?/?((19|20)2?[0-9]{0,2})4?$";
         private static final String DATE_REGEX_FULL = "^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/((19|20)\\d\\d)$";
         private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
+        private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("hh:mm");
 
 
 
@@ -116,6 +120,30 @@ public class Utils {
             return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
         }
 
+        public static Date asDate(LocalDate localDate) {
+            return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        }
+
+        public static Date asDate(LocalDateTime localDateTime) {
+            return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        }
+        public static Date asDate(String stringDate) {
+            return new Date(Long.parseLong(stringDate));
+        }
+
+        public static LocalDate asLocalDate(Date date) {
+            return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+        }
+
+        public static LocalDateTime asLocalDateTime(Date date) {
+            return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+        }
+        public static String dateAsStringTimeF(Date date) {
+            return TIME_FORMAT.format(date);
+        }
+
+
+
     }
 
 
@@ -140,4 +168,6 @@ public class Utils {
         }
 
     }
+
+
 }

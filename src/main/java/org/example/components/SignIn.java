@@ -42,7 +42,6 @@ public class SignIn extends JPanel {
         this.mainPanel = mainPanel;
         this.initLayout = initLayout;
         initComponents();
-        calendarPanel = new CalendarPanel(txtBirdthDayDate);
         setupLayout();
         setupDocumentFilters();
     }
@@ -115,7 +114,6 @@ public class SignIn extends JPanel {
             JPanel calendarContainer = new JPanel(new FlowLayout(FlowLayout.LEFT));
             JButton openCalendar = new JButton("Abrir calendario");
             openCalendar.addActionListener(e -> new CalendarPanel((JTextField) field));
-
             calendarContainer.add(field);
             calendarContainer.add(openCalendar);
             gbc.gridx = 1;

@@ -23,7 +23,6 @@ public class DisplayLayout extends JPanel{
     public static Paciente pacienteSession;
 
 
-
     public DisplayLayout(LayoutManager layout, JButton[] buttons) {
         super(layout);
         asideButtons = buttons;
