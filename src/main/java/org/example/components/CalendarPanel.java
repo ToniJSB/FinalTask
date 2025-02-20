@@ -4,6 +4,7 @@ import org.example.Constants;
 import org.example.Utils;
 import org.example.models.Medico;
 import org.example.service.ServiceCita;
+import org.example.service.ServiceMedico;
 import org.hibernate.Session;
 
 import javax.swing.*;
@@ -26,14 +27,19 @@ public class CalendarPanel extends JPanel {
     private JPanel calendarContainer;
     private JPanel parent;
     private DailyPlan dailyPlan;
+    private JTextField medicoField;
     private JTextField bDateField;
     private ServiceCita serviceCita;
+    private ServiceMedico serviceMedico;
 
-    public CalendarPanel(JPanel parent, DailyPlan dailyPlan, Session session) {
+    public CalendarPanel(JPanel parent, DailyPlan dailyPlan, Session session, JTextField medicoField) {
         super();
+        this.medicoField = medicoField;
         this.parent = parent;
         this.dailyPlan = dailyPlan;
         serviceCita = new ServiceCita(session);
+        serviceMedico = new ServiceMedico(session);
+
         instanceComponents();
         setDisplayDaily();
 
@@ -196,8 +202,8 @@ public class CalendarPanel extends JPanel {
     }
     private void showDailyPlan(LocalDate fecha) {
         parent.remove(dailyPlan);
-        Date date = Utils.DateFormat.asDate(fecha);
-        dailyPlan = new DailyPlan(date, serviceCita.askCitasByDay(Utils.DateFormat.asDate(fechaActual)),serviceCita);
+        dailyPlan = new DailyPlan(fecha, serviceMedico, serviceCita,serviceMedico.getMedicoById(Integer.parseInt(medicoField.getText())));
+//        dailyPlan.setMedicoOfDay(serviceMedico.getMedicoById(Integer.parseInt(medicoField.getText())));
         parent.add(dailyPlan);
 
         revalidate();

@@ -5,6 +5,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import org.example.Utils;
 import org.example.models.Cita;
+import org.example.models.Medico;
 import org.example.models.Paciente;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -26,10 +27,18 @@ public class DaoCita {
         CriteriaBuilder criteriaBuilder = dbSession.getCriteriaBuilder();
         CriteriaQuery<Cita> criteriaQuery = criteriaBuilder.createQuery(Cita.class);
         Root<Cita> citasExistentes = criteriaQuery.from(Cita.class);
-        System.out.println(date);
-        System.out.println(date.toString());
-        System.out.println(criteriaBuilder.createTupleQuery());
         criteriaQuery.select(citasExistentes).where(criteriaBuilder.equal(citasExistentes.get("fechaCita"), date));
+        return dbSession.createQuery(criteriaQuery).getResultList();
+    }
+    public List<Cita> getCitasByDayWithDoctor(Date date, Medico medico){
+        CriteriaBuilder criteriaBuilder = dbSession.getCriteriaBuilder();
+        CriteriaQuery<Cita> criteriaQuery = criteriaBuilder.createQuery(Cita.class);
+        Root<Cita> citasExistentes = criteriaQuery.from(Cita.class);
+        criteriaQuery.select(citasExistentes)
+                .where(
+                    criteriaBuilder.and(
+                        criteriaBuilder.equal(citasExistentes.get("fechaCita"), date),
+                        criteriaBuilder.equal(citasExistentes.get("medico"), medico)));
         return dbSession.createQuery(criteriaQuery).getResultList();
     }
 
@@ -37,7 +46,7 @@ public class DaoCita {
         CriteriaBuilder criteriaBuilder = dbSession.getCriteriaBuilder();
         CriteriaQuery<Cita> criteriaQuery = criteriaBuilder.createQuery(Cita.class);
         Root<Cita> citasPaciente = criteriaQuery.from(Cita.class);
-        criteriaQuery.select(citasPaciente).where(criteriaBuilder.equal(citasPaciente.get("id_paciente"), paciente.getIdPaciente()));
+        criteriaQuery.select(citasPaciente).where(criteriaBuilder.equal(citasPaciente.get("paciente"), paciente));
         return dbSession.createQuery(criteriaQuery).getResultList();
     }
 

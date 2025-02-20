@@ -10,10 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Calendar;
@@ -141,6 +138,23 @@ public class Utils {
         public static String dateAsStringTimeF(Date date) {
             return TIME_FORMAT.format(date);
         }
+        public static String dateAsStringDateF(Date date) {
+            return DATE_FORMAT.format(date);
+        }
+
+        public static LocalTime dateToLocalTime(Date date) {
+            if (date == null) {
+                throw new IllegalArgumentException("El objeto Date no puede ser nulo.");
+            }
+
+            // Convertir Date a Instant
+            Instant instant = date.toInstant();
+
+            // Convertir Instant a LocalTime usando la zona horaria del sistema
+
+            return instant.atZone(ZoneId.systemDefault()).toLocalTime();
+        }
+
 
 
 

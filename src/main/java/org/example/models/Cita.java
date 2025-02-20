@@ -2,6 +2,7 @@ package org.example.models;
 
 import jakarta.persistence.*;
 
+import java.time.LocalTime;
 import java.util.Date;
 
 
@@ -27,17 +28,24 @@ public class Cita {
 
     @Column(name = "hora_cita")
     @Temporal(TemporalType.TIME)
-    private Date horaCita;
+    private LocalTime horaCita;
 
     @Column(name = "Estado")
-    private EstadoCita estado;  // Podría usarse un Enum
+    private EstadoCita estado;
 
-    public Cita(Paciente paciente, Medico medico, Date fechaCita, Date horaCita) {
+    @Column(name = "Tipo")
+    private TipoCita tipo;
+
+
+    public Cita(Paciente paciente, Medico medico, Date fechaCita, LocalTime horaCita) {
         this.paciente = paciente;
         this.medico = medico;
         this.fechaCita = fechaCita;
         this.horaCita = horaCita;
         this.estado = EstadoCita.PROGRAMADA;
+    }
+
+    public Cita() {
     }
 
     public Long getIdCita() {
@@ -72,11 +80,11 @@ public class Cita {
         this.fechaCita = fechaCita;
     }
 
-    public Date getHoraCita() {
+    public LocalTime getHoraCita() {
         return horaCita;
     }
 
-    public void setHoraCita(Date horaCita) {
+    public void setHoraCita(LocalTime horaCita) {
         this.horaCita = horaCita;
     }
 
@@ -97,5 +105,9 @@ public class Cita {
 
     private void cancelarCita() {
         this.estado = EstadoCita.CANCELADA;
+    }
+
+    public String getInfo(){
+        return "%s - %s - %s".formatted(fechaCita, horaCita, medico.simpleInfo());
     }
 }

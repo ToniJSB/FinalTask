@@ -87,22 +87,4 @@ public class DiaryManager {
         });
     }
 
-    public static void main(String[] args) {
-        DiaryManager diary = new DiaryManager();
-
-        // Agendar algunas citas
-        diary.addAppointment(LocalTime.of(9, 0));
-        diary.addAppointment(LocalTime.of(10, 30));
-        diary.addAppointment(LocalTime.of(14, 0));
-
-        // Mostrar información
-        diary.printAppointments();
-        diary.printAvailableSlots();
-
-        // Calcular tiempo total
-        Duration totalTime = diary.calculateTotalAppointmentsTime();
-        System.out.printf("\nTiempo total de citas: %d horas %d minutos",
-                totalTime.toHours(),
-                totalTime.toMinutesPart());
-    }
 }

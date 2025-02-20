@@ -93,6 +93,8 @@ public class Medicos extends JPanel {
                 System.out.println(btn.getName());
                 txtNameMedico.setText(btn.getName());
                 ((CardLayout)superContainer.getParent().getLayout()).show(superContainer.getParent(),"CALENDAR");
+                superContainer.getParent().revalidate();
+                superContainer.getParent().repaint();
             }
         });
     }

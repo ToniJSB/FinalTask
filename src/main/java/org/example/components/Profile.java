@@ -1,15 +1,19 @@
 package org.example.components;
 
-import org.example.App;
+import org.example.models.Cita;
+import org.example.service.ServiceCita;
 import org.example.service.ServicePaciente;
 import org.hibernate.Session;
 
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDate;
+import java.util.List;
 
 public class Profile extends JPanel {
-    private ServicePaciente pacienteServ;
+    private ServicePaciente servicePaciente;
+    private ServiceCita serviceCita;
+
     private String dni;
     private String name;
     private String surname1;
@@ -19,7 +23,8 @@ public class Profile extends JPanel {
 
     public Profile(Session session) {
         super();
-        pacienteServ = new ServicePaciente(session);
+        servicePaciente = new ServicePaciente(session);
+        serviceCita = new ServiceCita(session);
         name = DisplayLayout.pacienteSession.getNombre();
         surname1 = DisplayLayout.pacienteSession.getApellido1();
         surname2 = DisplayLayout.pacienteSession.getApellido2();
@@ -44,6 +49,7 @@ public class Profile extends JPanel {
 
         container.add(infoContainer);
         add(container);
+        add(createCitasPanel());
     }
 
     private JPanel createPanelFullName(){
@@ -62,6 +68,15 @@ public class Profile extends JPanel {
         panelFullName.add(panelSurname);
 
         return panelFullName;
+    }
+
+    private JPanel createCitasPanel(){
+        List<Cita> citas = serviceCita.askCitasByPaciente(DisplayLayout.pacienteSession);
+        JPanel panelCitas = new JPanel(new GridLayout(citas.size(),1));
+        for(Cita cita: citas){
+            panelCitas.add(new JLabel(cita.getInfo()));
+        }
+        return panelCitas;
     }
 
 }
