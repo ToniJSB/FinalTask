@@ -31,14 +31,16 @@ public class CalendarPanel extends JPanel {
     private JTextField bDateField;
     private ServiceCita serviceCita;
     private ServiceMedico serviceMedico;
+    private DisplayLayout appDisplay;
 
-    public CalendarPanel(JPanel parent, DailyPlan dailyPlan, Session session, JTextField medicoField) {
+    public CalendarPanel(JPanel parent, DailyPlan dailyPlan, Session session, JTextField medicoField, DisplayLayout displayLayout) {
         super();
         this.medicoField = medicoField;
         this.parent = parent;
         this.dailyPlan = dailyPlan;
         serviceCita = new ServiceCita(session);
         serviceMedico = new ServiceMedico(session);
+        appDisplay = displayLayout;
 
         instanceComponents();
         setDisplayDaily();
@@ -202,7 +204,7 @@ public class CalendarPanel extends JPanel {
     }
     private void showDailyPlan(LocalDate fecha) {
         parent.remove(dailyPlan);
-        dailyPlan = new DailyPlan(fecha, serviceMedico, serviceCita,serviceMedico.getMedicoById(Integer.parseInt(medicoField.getText())));
+        dailyPlan = new DailyPlan(fecha, serviceMedico, serviceCita,serviceMedico.getMedicoById(Integer.parseInt(medicoField.getText())),appDisplay);
 //        dailyPlan.setMedicoOfDay(serviceMedico.getMedicoById(Integer.parseInt(medicoField.getText())));
         parent.add(dailyPlan);
 

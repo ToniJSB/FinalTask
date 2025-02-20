@@ -4,6 +4,7 @@ import org.example.Constants;
 import org.example.Utils;
 import org.example.models.Cita;
 import org.example.models.Medico;
+import org.example.models.TipoCita;
 import org.example.service.ServiceCita;
 import org.example.service.ServiceMedico;
 
@@ -20,17 +21,19 @@ import java.util.stream.Collectors;
 public class DailyPlan extends JPanel {
     private final int maxDateByDay = Constants.MAX_DATES_X_DAY;
     private LocalDate dayDate;
+    private DisplayLayout fullAppDisplay;
     private List<Cita> citasByDayDate;
     private ServiceCita serviceCita;
     private ServiceMedico serviceMedico;
     private Medico medicoOfDay;
     private JPanel container;
 
-    public DailyPlan(LocalDate day, ServiceMedico serviceMedico, ServiceCita serviceCita, Medico medico) {
+    public DailyPlan(LocalDate day, ServiceMedico serviceMedico, ServiceCita serviceCita, Medico medico, DisplayLayout appDisplay) {
         super(new BorderLayout()); // Usar BorderLayout para expandir el scroll
         this.dayDate = day;
         this.serviceCita = serviceCita;
         this.serviceMedico = serviceMedico;
+        fullAppDisplay = appDisplay;
         medicoOfDay = medico;
         citasByDayDate = serviceCita.askCitasByDayWithMedico(Utils.DateFormat.asDate(dayDate), medicoOfDay);
         setDisplay();
@@ -102,7 +105,7 @@ public class DailyPlan extends JPanel {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                serviceCita.createCita(date,medicoOfDay,time);
+                serviceCita.createCita(date,medicoOfDay,time, TipoCita.PRESENCIAL);
                 JDialog noti = new JDialog();
                 JLabel label = new JLabel("Cita concedida.");
                 noti.add(label);
@@ -117,9 +120,9 @@ public class DailyPlan extends JPanel {
                 // Establecer la posición del diálogo
                 noti.setLocation(x, y);
                 citasByDayDate = serviceCita.askCitasByDayWithMedico(date, medicoOfDay);
-
                 revalidate();
                 repaint();
+                ((CardLayout)fullAppDisplay.getBody().getLayout()).show(fullAppDisplay.getBody(),"PERFIL");
             }
         };
     }

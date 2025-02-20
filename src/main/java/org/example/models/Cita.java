@@ -37,12 +37,13 @@ public class Cita {
     private TipoCita tipo;
 
 
-    public Cita(Paciente paciente, Medico medico, Date fechaCita, LocalTime horaCita) {
+    public Cita(Paciente paciente, Medico medico, Date fechaCita, LocalTime horaCita, TipoCita tipo) {
         this.paciente = paciente;
         this.medico = medico;
         this.fechaCita = fechaCita;
         this.horaCita = horaCita;
         this.estado = EstadoCita.PROGRAMADA;
+        this.tipo = tipo;
     }
 
     public Cita() {
@@ -88,11 +89,21 @@ public class Cita {
         this.horaCita = horaCita;
     }
 
+    public void setEstado(EstadoCita estado) {
+        this.estado = estado;
+    }
+
     public EstadoCita getEstado() {
         return estado;
     }
 
+    public TipoCita getTipo() {
+        return tipo;
+    }
 
+    public void setTipo(TipoCita tipo) {
+        this.tipo = tipo;
+    }
 
     private void programarCita() {
         this.estado = EstadoCita.PROGRAMADA;

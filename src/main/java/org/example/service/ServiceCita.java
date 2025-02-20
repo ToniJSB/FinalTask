@@ -6,6 +6,7 @@ import org.example.dao.DaoPaciente;
 import org.example.models.Cita;
 import org.example.models.Medico;
 import org.example.models.Paciente;
+import org.example.models.TipoCita;
 import org.hibernate.Session;
 
 import java.sql.Timestamp;
@@ -30,8 +31,8 @@ public class ServiceCita {
         return daoCita.getCitasFromPaciente(paciente);
     }
 
-    public void createCita(Date localDate, Medico medico, LocalTime localTime){
-        daoCita.saveCita(new Cita(DisplayLayout.pacienteSession,medico, localDate,localTime));
+    public void createCita(Date localDate, Medico medico, LocalTime localTime, TipoCita tipoCita){
+        daoCita.saveCita(new Cita(DisplayLayout.pacienteSession,medico, localDate, localTime, tipoCita));
     }
 
     public Session getSession(){

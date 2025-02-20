@@ -141,7 +141,7 @@ public class LogIn  extends JPanel {
             DisplayLayout.pacienteSession = pacienteLogged;
             DisplayLayout displayLayout =  new DisplayLayout(initLayout,botones);
             Profile profile = new Profile(dbSession);
-            Calendar calendario = new Calendar(dbSession);
+            Calendar calendario = new Calendar(dbSession,displayLayout);
 
             displayLayout.appendBody(profile,"PERFIL");
             displayLayout.appendBody(calendario, "CALENDARIO");

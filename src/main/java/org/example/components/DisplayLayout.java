@@ -43,9 +43,8 @@ public class DisplayLayout extends JPanel{
         }
     }
 
-
-    public void updateBody(){
-
+    public JPanel getBody() {
+        return body;
     }
 
     private void setDisplayLayout(){

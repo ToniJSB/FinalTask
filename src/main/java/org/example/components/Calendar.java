@@ -18,6 +18,7 @@ import java.util.Date;
 public class Calendar extends JPanel {
     private LocalDate fechaActual;
     private CalendarPanel panelCalendarioQ;
+    private DisplayLayout parentDisplay;
     private JPanel fullContainer;
     private DailyPlan dailyPlan;
     private JTextField medicoField;
@@ -25,20 +26,25 @@ public class Calendar extends JPanel {
     private ServiceCita serviceCita;
     private ServiceMedico serviceMedico;
 
-    public Calendar(Session session) {
+    public Calendar(Session session, DisplayLayout fullDisplay) {
         serviceCita = new ServiceCita(session);
         serviceMedico = new ServiceMedico(session);
         fechaActual = LocalDate.now();
+        parentDisplay = fullDisplay;
         instanceComponents();
         createDisplay();
+    }
+
+    public DisplayLayout getParentDisplay() {
+        return parentDisplay;
     }
 
     private void instanceComponents(){
         fullContainer = new JPanel(new GridLayout(1,2));
         medicoField = new JTextField();
         medicosComponent = new Medicos(serviceCita.getSession(),medicoField);
-        dailyPlan = new DailyPlan(fechaActual, serviceMedico, serviceCita, serviceMedico.getMedicoById(1));
-        panelCalendarioQ = new CalendarPanel(fullContainer,dailyPlan, serviceCita.getSession(), medicoField );
+        dailyPlan = new DailyPlan(fechaActual, serviceMedico, serviceCita, serviceMedico.getMedicoById(1), parentDisplay);
+        panelCalendarioQ = new CalendarPanel(fullContainer,dailyPlan, serviceCita.getSession(), medicoField, parentDisplay );
         medicoField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
