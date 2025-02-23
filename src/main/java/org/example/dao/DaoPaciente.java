@@ -34,4 +34,11 @@ public class DaoPaciente {
         dbSession.persist(paciente);
         transaction.commit();
     }
+    public void updatePaciente(Paciente paciente){
+        Transaction transaction = dbSession.getTransaction();
+        transaction.begin();
+        dbSession.merge(paciente);
+        transaction.commit();
+    }
+
 }

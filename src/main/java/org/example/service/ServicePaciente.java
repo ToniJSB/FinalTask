@@ -16,10 +16,30 @@ public class ServicePaciente {
     }
 
     public boolean createPaciente(String nombre, String apellido1, String apellido2, String dni, String email, String password, String direccion, String telefono, LocalDate bdate){
-        Paciente paciente = new Paciente(nombre, apellido1, apellido2, dni, email.toLowerCase(Locale.ROOT), password, direccion, bdate);
+        Paciente paciente = new Paciente(0,nombre, apellido1, apellido2, dni, email.toLowerCase(Locale.ROOT), password, direccion, bdate);
         try {
             paciente.setTelefono(Integer.parseInt(telefono));
             daoPaciente.savePaciente(paciente);
+        } catch (NumberFormatException ex) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean updatePaciente(int id,String nombre, String apellido1, String apellido2, String dni, String email, String password, String direccion, String telefono, LocalDate bdate){
+        Paciente paciente;
+        System.out.println(password);
+        System.out.println(password.isEmpty());
+        System.out.println("la contraseña que recibe");
+        if (password.isEmpty()){
+            System.out.println("password Empty");
+            paciente = new Paciente(id,nombre, apellido1, apellido2, dni, email.toLowerCase(Locale.ROOT), direccion, bdate);
+        }else{
+            paciente = new Paciente(id,nombre, apellido1, apellido2, dni, email.toLowerCase(Locale.ROOT), Utils.Password.encriptarPassword(password), direccion, bdate);
+        }
+        try {
+            paciente.setTelefono(Integer.parseInt(telefono));
+            daoPaciente.updatePaciente(paciente);
         } catch (NumberFormatException ex) {
             return false;
         }

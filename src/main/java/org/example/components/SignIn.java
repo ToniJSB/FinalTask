@@ -70,13 +70,20 @@ public class SignIn extends JPanel {
         txtDireccion = new JTextField(20);
         txtTelefono = new JTextField(9);
         txtBirdthDayDate = new JTextField(10);
-        if(mainPanel!=null && userSession!=null){
+        if(DisplayLayout.pacienteSession!=null){
+            userSession =DisplayLayout.pacienteSession;
             txtId.setText(String.valueOf(userSession.getIdPaciente()));
             txtNombre.setText(userSession.getNombre());
             txtApellido1.setText(userSession.getApellido1());
             txtApellido2.setText(userSession.getApellido2());
             txtDni.setText(userSession.getDni());
+            txtDni.setEditable(false);
             txtEmail.setText(userSession.getEmail());
+            txtDireccion.setText(userSession.getDireccion());
+            txtTelefono.setText(String.valueOf(userSession.getTelefono()));
+            txtBirdthDayDate.setText(Utils.DateFormat.dateAsStringDateF(Utils.DateFormat.asDate(userSession.getbDate())));
+
+            txtBirdthDayDate.setEditable(false);
         }
 
         btnGuardar = new JButton("Guardar");
@@ -165,30 +172,53 @@ public class SignIn extends JPanel {
 
 
     private void guardarAction(ActionEvent e) {
-        if (!validarCampos()) {
-            return;
-        }
-        String[] bDateSplit = txtBirdthDayDate.getText().split("/");
-        boolean created = servicePaciente.createPaciente(
-                txtNombre.getText(),
-                txtApellido1.getText(),
-                txtApellido2.getText(),
-                txtDni.getText(),
-                txtEmail.getText(),
-                Utils.Password.encriptarPassword(new String(txtPassword.getPassword())),
-                txtDireccion.getText(),
-                txtTelefono.getText(),
-                LocalDate.of(
-                        Integer.parseInt(bDateSplit[2]),
-                        Integer.parseInt(bDateSplit[1]),
-                        Integer.parseInt(bDateSplit[0]))
+        if (validarCampos()) {
+            String[] bDateSplit = txtBirdthDayDate.getText().split("/");
+            boolean created;
+            if (userSession==null){
+                created = servicePaciente.createPaciente(
+                        txtNombre.getText(),
+                        txtApellido1.getText(),
+                        txtApellido2.getText(),
+                        txtDni.getText(),
+                        txtEmail.getText(),
+                        Utils.Password.encriptarPassword(new String(txtPassword.getPassword())),
+                        txtDireccion.getText(),
+                        txtTelefono.getText(),
+                        LocalDate.of(
+                                Integer.parseInt(bDateSplit[2]),
+                                Integer.parseInt(bDateSplit[1]),
+                                Integer.parseInt(bDateSplit[0]))
+                        );
+            }else{
+                System.out.println("contraseña vacía");
+                created = servicePaciente.updatePaciente(
+                        Integer.parseInt(txtId.getText()),
+                        txtNombre.getText(),
+                        txtApellido1.getText(),
+                        txtApellido2.getText(),
+                        txtDni.getText(),
+                        txtEmail.getText(),
+                        new String(txtPassword.getPassword()),
+                        txtDireccion.getText(),
+                        txtTelefono.getText(),
+                        LocalDate.of(
+                                Integer.parseInt(bDateSplit[2]),
+                                Integer.parseInt(bDateSplit[1]),
+                                Integer.parseInt(bDateSplit[0]))
                 );
-        if (created){
-            JOptionPane.showMessageDialog(this, "Paciente guardado:\n" + txtNombre.getText());
-            initLayout.show(mainPanel,"LOGIN");
-
-        }else{
-            JOptionPane.showMessageDialog(this, "Algún campo es inválido, prueba con el teléfono", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            if (created){
+                JOptionPane.showMessageDialog(this, "Paciente guardado:\n" + txtNombre.getText());
+                if (mainPanel!=null){
+                    initLayout.show(mainPanel,"LOGIN");
+                }else{
+                    revalidate();
+                    repaint();
+                }
+            }else{
+                JOptionPane.showMessageDialog(this, "Algún campo es inválido", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
 
         // Aquí iría la lógica para guardar en la base de datos
@@ -202,18 +232,28 @@ public class SignIn extends JPanel {
     private boolean validarCampos() {
         boolean result = true;
         String mensaje = "";
-        if (txtNombre.getText().isBlank() ||
-                txtApellido1.getText().isBlank() ||
-                txtDni.getText().isBlank() ||
-                txtEmail.getText().isBlank() ||
-                txtPassword.getPassword().length == 0) {
+        if (userSession == null){
+            if (txtNombre.getText().isBlank() ||
+                    txtApellido1.getText().isBlank() ||
+                    txtDni.getText().isBlank() ||
+                    txtEmail.getText().isBlank() ||
+                    txtPassword.getPassword().length == 0 || txtConfirmPassword.getPassword().length == 0) {
 
-            mensaje += "Los campos marcados con * son obligatorios\n";
-            result =  false;
+                mensaje += "Los campos marcados con * son obligatorios.\n";
+                result =  false;
+            }
+        }else {
+            if (txtNombre.getText().isBlank() ||
+                    txtApellido1.getText().isBlank() ||
+                    txtDni.getText().isBlank() ||
+                    txtEmail.getText().isBlank() ){
+                mensaje += "Los campos marcados con * son obligatorios.\n";
+                result =  false;
+            }
         }
 
         if (txtDni.getText().length() != 9) {
-            mensaje += "El DNI debe tener 9 caracteres\n";
+            mensaje += "El DNI debe tener 9 caracteres.\n";
             result =  false;
         }
         if (!Utils.validarEmail(txtEmail.getText())){
@@ -222,12 +262,12 @@ public class SignIn extends JPanel {
         }
         // Validar que las contraseñas coincidan
         if (!new String(txtConfirmPassword.getPassword()).equals(new String(txtPassword.getPassword()))) {
-            mensaje = "Las contraseñas no coinciden";
+            mensaje = "Las contraseñas no coinciden.\n";
             result = false;
         }
 
         if (!Utils.DateFormat.isFullDateValid(txtBirdthDayDate.getText())) {
-            mensaje = "La fecha de nacimiento no es válida o está fuera del rango permitido.\n"
+            mensaje = "La fecha de nacimiento no es válida o está fuera del rango permitido.\n";
             result =  false;
         }
         if (!result){

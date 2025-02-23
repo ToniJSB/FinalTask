@@ -46,7 +46,10 @@ public class Paciente {
 
 
     public Paciente(){}
-    public Paciente(String nombre, String apellido1, String apellido2, String dni, String email, String password, String direccion, LocalDate birthDate) {
+    public Paciente(int id,String nombre, String apellido1, String apellido2, String dni, String email, String password, String direccion, LocalDate birthDate) {
+        if (id!=0){
+            idPaciente=id;
+        }
         this.nombre = nombre;
         this.apellido1 = apellido1;
         this.apellido2 = apellido2;
@@ -55,7 +58,18 @@ public class Paciente {
         this.password = password;
         this.direccion = direccion;
         bDate = birthDate;
-        this.telefono = telefono;
+    }
+    public Paciente(int id,String nombre, String apellido1, String apellido2, String dni, String email, String direccion, LocalDate birthDate) {
+        if (id!=0){
+            idPaciente=id;
+        }
+        this.nombre = nombre;
+        this.apellido1 = apellido1;
+        this.apellido2 = apellido2;
+        this.dni = dni;
+        this.email = email;
+        this.direccion = direccion;
+        bDate = birthDate;
     }
 
     public int getIdPaciente() {

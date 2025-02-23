@@ -19,6 +19,7 @@ public class Profile extends JPanel {
     private String surname1;
     private String surname2;
     private LocalDate birthdate;
+    private SignIn editableForm;
 
 
     public Profile(Session session) {
@@ -30,6 +31,7 @@ public class Profile extends JPanel {
         surname2 = DisplayLayout.pacienteSession.getApellido2();
         dni = DisplayLayout.pacienteSession.getDni();
         birthdate = DisplayLayout.pacienteSession.getbDate();
+        editableForm = new SignIn(session);
         setDisplay();
 
 
@@ -47,7 +49,8 @@ public class Profile extends JPanel {
         infoContainer.add(panelFullName);
         infoContainer.add(panelBirthdate);
 
-        container.add(infoContainer);
+//        container.add(infoContainer);
+        container.add(editableForm);
         add(container);
         add(createCitasPanel());
     }
