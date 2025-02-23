@@ -7,6 +7,7 @@ import org.hibernate.Session;
 
 import javax.swing.*;
 import java.time.LocalDate;
+import java.util.Locale;
 
 public class ServicePaciente {
     private DaoPaciente daoPaciente;
@@ -15,7 +16,7 @@ public class ServicePaciente {
     }
 
     public boolean createPaciente(String nombre, String apellido1, String apellido2, String dni, String email, String password, String direccion, String telefono, LocalDate bdate){
-        Paciente paciente = new Paciente(nombre, apellido1, apellido2, dni, email, password, direccion, bdate);
+        Paciente paciente = new Paciente(nombre, apellido1, apellido2, dni, email.toLowerCase(Locale.ROOT), password, direccion, bdate);
         try {
             paciente.setTelefono(Integer.parseInt(telefono));
             daoPaciente.savePaciente(paciente);

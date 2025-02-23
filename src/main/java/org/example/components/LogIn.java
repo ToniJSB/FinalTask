@@ -136,14 +136,16 @@ public class LogIn  extends JPanel {
         Paciente pacienteLogged = servicePaciente.getPacienteByEmail(email);
         boolean result = false;
         if (servicePaciente.isValidPassowrd(password,pacienteLogged.getPassword())){
-            JButton[] botones = {new JButton("Informes"), new JButton("Medicos"), new JButton("Perfil"), new JButton("Calendario")};
+            JButton[] botones = {new JButton("Historial"), new JButton("Perfil"), new JButton("Calendario")};
 
             DisplayLayout.pacienteSession = pacienteLogged;
             DisplayLayout displayLayout =  new DisplayLayout(initLayout,botones);
             Profile profile = new Profile(dbSession);
+            CHistorialMedico historialMedico = new CHistorialMedico(dbSession);
             Calendar calendario = new Calendar(dbSession,displayLayout);
 
             displayLayout.appendBody(profile,"PERFIL");
+            displayLayout.appendBody(historialMedico,"HISTORIAL");
             displayLayout.appendBody(calendario, "CALENDARIO");
             initPanel.add(displayLayout,"DISPLAY");
             result = true;

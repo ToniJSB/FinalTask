@@ -15,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Utils {
@@ -38,6 +39,14 @@ public class Utils {
             throw new RuntimeException(e);
         }
     }
+    public static boolean validarEmail(String email) {
+        // Expresión regular para validar un email
+        String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+
     public static class DateFormat{
         private static final String RARE_REGEX_PARTIAL = "^[0-9]|/";
         private static final String DATE_REGEX_PARTIAL = "^(0[1-9]|[12][0-9]|3[01])2?/?([01][0-9])?/?((19|20)2?[0-9]{0,2})4?$";

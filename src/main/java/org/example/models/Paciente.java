@@ -134,4 +134,8 @@ public class Paciente {
         this.bDate = bDate;
     }
 
+    public String getFullName(){
+        return "%s %s %s".formatted(nombre,apellido1,apellido2);
+    }
+
 }

@@ -8,6 +8,7 @@ import org.example.service.ServiceMedico;
 import org.hibernate.Session;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -167,7 +168,10 @@ public class CalendarPanel extends JPanel {
         while (fechaActual.isBefore(ultimoDiaMes.plusDays(1))) {
             JButton boton = new JButton(String.valueOf(fechaActual.getDayOfMonth()));
             if (fechaActual.equals(LocalDate.now())) {
-                boton.setBackground(Color.YELLOW); // Resaltar el día actual
+                // TODO Poner color distinto al Backround del dia de hoy
+//                boton.setBorder(BorderFactory.createLineBorder(Color.BLUE,1));
+                boton.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+//                boton.setBackground(Color.YELLOW);
             }
             LocalDate finalFechaActual = fechaActual;
             if(dailyPlan == null){

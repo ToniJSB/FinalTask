@@ -25,6 +25,7 @@ public class SignIn extends JPanel {
     private JTextField txtDni;
     private JTextField txtEmail;
     private JPasswordField txtPassword;
+    private JPasswordField txtConfirmPassword;
     private JTextField txtDireccion;
     private JTextField txtTelefono;
     private JTextField txtBirdthDayDate;
@@ -37,10 +38,19 @@ public class SignIn extends JPanel {
     private CardLayout initLayout;
     private JPanel mainPanel;
 
+    private Paciente userSession;
+
     public SignIn(JPanel mainPanel, CardLayout initLayout, Session session) {
         servicePaciente = new ServicePaciente(session);
         this.mainPanel = mainPanel;
         this.initLayout = initLayout;
+        initComponents();
+        setupLayout();
+        setupDocumentFilters();
+    }
+    public SignIn(Session session) {
+        servicePaciente = new ServicePaciente(session);
+        userSession = DisplayLayout.pacienteSession;
         initComponents();
         setupLayout();
         setupDocumentFilters();
@@ -56,16 +66,30 @@ public class SignIn extends JPanel {
         txtDni = new JTextField(9);
         txtEmail = new JTextField(20);
         txtPassword = new JPasswordField(20);
+        txtConfirmPassword = new JPasswordField(20);
         txtDireccion = new JTextField(20);
         txtTelefono = new JTextField(9);
         txtBirdthDayDate = new JTextField(10);
+        if(mainPanel!=null && userSession!=null){
+            txtId.setText(String.valueOf(userSession.getIdPaciente()));
+            txtNombre.setText(userSession.getNombre());
+            txtApellido1.setText(userSession.getApellido1());
+            txtApellido2.setText(userSession.getApellido2());
+            txtDni.setText(userSession.getDni());
+            txtEmail.setText(userSession.getEmail());
+        }
 
         btnGuardar = new JButton("Guardar");
-        btnCancelar = new JButton("Cancelar");
+        if (mainPanel != null){
+            btnCancelar = new JButton("Cancelar");
+        }
 
         // Configurar acciones de los botones
         btnGuardar.addActionListener(this::guardarAction);
-        btnCancelar.addActionListener(this::cancelarAction);
+        if (mainPanel != null){
+            btnCancelar.addActionListener(this::cancelarAction);
+        }
+
     }
 
     private void setupLayout() {
@@ -82,7 +106,8 @@ public class SignIn extends JPanel {
         addField(gbc, row++, "Segundo Apellido:", txtApellido2);
         addField(gbc, row++, "DNI* (9 caracteres):", txtDni);
         addField(gbc, row++, "Email*:", txtEmail);
-        addField(gbc, row++, "Password*:", txtPassword);
+        addField(gbc, row++, "Contraseña*:", txtPassword);
+        addField(gbc, row++, "Condirmar contraseña*:", txtConfirmPassword);
         addField(gbc, row++, "Dirección:", txtDireccion);
         addField(gbc, row++, "Teléfono:", txtTelefono);
         addField(gbc, row++, "Fecha de nacimiento:", txtBirdthDayDate);
@@ -93,7 +118,9 @@ public class SignIn extends JPanel {
         gbc.anchor = GridBagConstraints.CENTER;
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         buttonPanel.add(btnGuardar);
-        buttonPanel.add(btnCancelar);
+        if (mainPanel != null){
+            buttonPanel.add(btnCancelar);
+        }
         container.add(buttonPanel, gbc);
         add(container);
     }
@@ -135,6 +162,8 @@ public class SignIn extends JPanel {
         ((AbstractDocument) txtBirdthDayDate.getDocument()).setDocumentFilter(new DateDocumentFilter());
     }
 
+
+
     private void guardarAction(ActionEvent e) {
         if (!validarCampos()) {
             return;
@@ -171,36 +200,45 @@ public class SignIn extends JPanel {
     }
 
     private boolean validarCampos() {
+        boolean result = true;
+        String mensaje = "";
         if (txtNombre.getText().isBlank() ||
                 txtApellido1.getText().isBlank() ||
                 txtDni.getText().isBlank() ||
                 txtEmail.getText().isBlank() ||
                 txtPassword.getPassword().length == 0) {
 
-            JOptionPane.showMessageDialog(this,
-                    "Los campos marcados con * son obligatorios",
-                    "Validación",
-                    JOptionPane.WARNING_MESSAGE);
-            return false;
+            mensaje += "Los campos marcados con * son obligatorios\n";
+            result =  false;
         }
 
         if (txtDni.getText().length() != 9) {
-            JOptionPane.showMessageDialog(this,
-                    "El DNI debe tener 9 caracteres",
-                    "Validación",
-                    JOptionPane.WARNING_MESSAGE);
-            return false;
+            mensaje += "El DNI debe tener 9 caracteres\n";
+            result =  false;
+        }
+        if (!Utils.validarEmail(txtEmail.getText())){
+            mensaje += "El email no cumple las características.\n";
+            result =  false;
+        }
+        // Validar que las contraseñas coincidan
+        if (!new String(txtConfirmPassword.getPassword()).equals(new String(txtPassword.getPassword()))) {
+            mensaje = "Las contraseñas no coinciden";
+            result = false;
         }
 
         if (!Utils.DateFormat.isFullDateValid(txtBirdthDayDate.getText())) {
+            mensaje = "La fecha de nacimiento no es válida o está fuera del rango permitido.\n"
+            result =  false;
+        }
+        if (!result){
             JOptionPane.showMessageDialog(this,
-                    "La fecha de nacimiento no es válida o está fuera del rango permitido.",
+                    mensaje,
                     "Validación",
                     JOptionPane.WARNING_MESSAGE);
-            return false;
+
         }
 
-        return true;
+        return result;
     }
 
     public void limpiarCampos() {

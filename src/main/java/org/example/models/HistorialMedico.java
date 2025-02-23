@@ -26,6 +26,9 @@ public class HistorialMedico {
     @Column(name = "Tratamiento", columnDefinition = "TEXT")
     private String tratamiento;
 
+    public HistorialMedico() {
+    }
+
     public HistorialMedico(Paciente paciente, Date fechaVisita, String diagnostico, String tratamiento) {
         this.paciente = paciente;
         this.fechaVisita = fechaVisita;
