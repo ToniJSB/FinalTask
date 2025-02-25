@@ -27,6 +27,13 @@ public class DaoPaciente {
         criteriaQuery.select(paciente).where(criteriaBuilder.equal(paciente.get("email"), email));
         return dbSession.createQuery(criteriaQuery).getSingleResult();
     }
+    public Paciente getPacienteById(int id){
+        CriteriaBuilder criteriaBuilder = dbSession.getCriteriaBuilder();
+        CriteriaQuery<Paciente> criteriaQuery = criteriaBuilder.createQuery(Paciente.class);
+        Root<Paciente> paciente = criteriaQuery.from(Paciente.class);
+        criteriaQuery.select(paciente).where(criteriaBuilder.equal(paciente.get("id"), id));
+        return dbSession.createQuery(criteriaQuery).getSingleResult();
+    }
 
     public void savePaciente(Paciente paciente){
         Transaction transaction = dbSession.getTransaction();

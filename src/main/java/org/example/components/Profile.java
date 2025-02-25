@@ -1,12 +1,15 @@
 package org.example.components;
 
 import org.example.models.Cita;
+import org.example.models.EstadoCita;
 import org.example.service.ServiceCita;
 import org.example.service.ServicePaciente;
 import org.hibernate.Session;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -20,6 +23,8 @@ public class Profile extends JPanel {
     private String surname2;
     private LocalDate birthdate;
     private SignIn editableForm;
+    private JPanel panelCitas;
+    private JPanel panelCita;
 
 
     public Profile(Session session) {
@@ -52,7 +57,8 @@ public class Profile extends JPanel {
 //        container.add(infoContainer);
         container.add(editableForm);
         add(container);
-        add(createCitasPanel());
+        createCitasPanel();
+        add(panelCitas);
     }
 
     private JPanel createPanelFullName(){
@@ -73,13 +79,40 @@ public class Profile extends JPanel {
         return panelFullName;
     }
 
-    private JPanel createCitasPanel(){
+    private void createCitasPanel(){
         List<Cita> citas = serviceCita.askCitasByPaciente(DisplayLayout.pacienteSession);
-        JPanel panelCitas = new JPanel(new GridLayout(citas.size(),1));
+        panelCitas = new JPanel(new GridLayout(citas.size(),1));
         for(Cita cita: citas){
-            panelCitas.add(new JLabel(cita.getInfo()));
+            panelCita = new JPanel();
+            panelCita.add(new JLabel(cita.getInfo()));
+            JButton reprogramarBtn = new JButton("Reprogramar");
+            JButton cancelarBtn = new JButton("Cancelar");
+            cancelarBtn.addActionListener(cancelarCita(cita));
+            panelCita.add(reprogramarBtn);
+            panelCita.add(cancelarBtn);
+            panelCitas.add(panelCita);
         }
-        return panelCitas;
     }
 
+    private ActionListener cancelarCita(Cita cita){
+        return e -> {
+            cita.setEstado(EstadoCita.CANCELADA);
+            serviceCita.actualizarCita(cita);
+            System.out.println("reprogramada");
+            remove(panelCitas);
+            repaint();
+            revalidate();
+            createCitasPanel();
+            add(panelCitas);
+        };
+    }
+    private ActionListener reprogramarCita(Cita cita){
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cita.setEstado(EstadoCita.REPROGRAMADA);
+                serviceCita.actualizarCita(cita);
+            }
+        };
+    }
 }

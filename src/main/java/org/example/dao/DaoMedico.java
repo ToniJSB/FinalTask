@@ -29,13 +29,6 @@ public class DaoMedico {
         return dbSession.createQuery(hql, Medico.class)
                 .getResultList();
     }
-    public List<Medico> askMedicosByEspecialidad(String especialidad){
-        String hql = "FROM Medico";
-        return dbSession.createQuery(hql, Medico.class)
-                .setParameter("especialidad", especialidad)
-                .getResultList();
-    }
-
     public Medico askMedicoByNombreApellidos(String nombre,String apellidos){
         CriteriaBuilder criteriaBuilder = dbSession.getCriteriaBuilder();
         CriteriaQuery<Medico> criteriaQuery = criteriaBuilder.createQuery(Medico.class);
@@ -43,11 +36,34 @@ public class DaoMedico {
         criteriaQuery.select(citasPaciente).where(criteriaBuilder.equal(citasPaciente.get("nombre"), nombre),criteriaBuilder.equal(citasPaciente.get("apellidos"), apellidos));
         return dbSession.createQuery(criteriaQuery).getSingleResultOrNull();
     }
+
     public List<Medico> askMedicosByNombreApellidos(String nombre,String apellidos){
         CriteriaBuilder criteriaBuilder = dbSession.getCriteriaBuilder();
         CriteriaQuery<Medico> criteriaQuery = criteriaBuilder.createQuery(Medico.class);
         Root<Medico> citasPaciente = criteriaQuery.from(Medico.class);
-        criteriaQuery.select(citasPaciente).where(criteriaBuilder.or(criteriaBuilder.equal(citasPaciente.get("nombre"), nombre),criteriaBuilder.equal(citasPaciente.get("apellidos"), apellidos)));
+        criteriaQuery.select(citasPaciente).where(criteriaBuilder.or(criteriaBuilder.like(citasPaciente.get("nombre"), nombre),criteriaBuilder.like(citasPaciente.get("apellidos"), apellidos)));
+        return dbSession.createQuery(criteriaQuery).getResultList();
+    }
+    public List<Medico> askMedicosByEspecialidad(String especialidad){
+        CriteriaBuilder criteriaBuilder = dbSession.getCriteriaBuilder();
+        CriteriaQuery<Medico> criteriaQuery = criteriaBuilder.createQuery(Medico.class);
+        Root<Medico> citasPaciente = criteriaQuery.from(Medico.class);
+        criteriaQuery.select(citasPaciente).where(criteriaBuilder.like(citasPaciente.get("especialidad"), especialidad));
+        return dbSession.createQuery(criteriaQuery).getResultList();
+    }
+    public List<Medico> askMedicosByEspecialidadPlusName(String especialidad, String nombre, String apellidos){
+        CriteriaBuilder criteriaBuilder = dbSession.getCriteriaBuilder();
+        CriteriaQuery<Medico> criteriaQuery = criteriaBuilder.createQuery(Medico.class);
+        Root<Medico> medicoRoot = criteriaQuery.from(Medico.class);
+
+        // Construir las condiciones de búsqueda
+        Predicate condicionNombre = criteriaBuilder.like(medicoRoot.get("nombre"), "%" + nombre + "%");
+        Predicate condicionApellidos = criteriaBuilder.like(medicoRoot.get("apellidos"), "%" + apellidos + "%");
+        Predicate condicionEspecialidad = criteriaBuilder.like(medicoRoot.get("especialidad"), "%" + especialidad + "%");
+
+        // Combinar las condiciones con AND
+        Predicate condicionesCombinadas = criteriaBuilder.and(condicionNombre, condicionApellidos, condicionEspecialidad);
+        criteriaQuery.select(medicoRoot).where(condicionesCombinadas);
         return dbSession.createQuery(criteriaQuery).getResultList();
     }
 

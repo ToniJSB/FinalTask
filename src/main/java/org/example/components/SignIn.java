@@ -87,13 +87,9 @@ public class SignIn extends JPanel {
         }
 
         btnGuardar = new JButton("Guardar");
-        if (mainPanel != null){
-            btnCancelar = new JButton("Cancelar");
-        }
-
-        // Configurar acciones de los botones
         btnGuardar.addActionListener(this::guardarAction);
         if (mainPanel != null){
+            btnCancelar = new JButton("Cancelar");
             btnCancelar.addActionListener(this::cancelarAction);
         }
 
@@ -213,8 +209,8 @@ public class SignIn extends JPanel {
                 if (mainPanel!=null){
                     initLayout.show(mainPanel,"LOGIN");
                 }else{
-                    revalidate();
                     repaint();
+                    revalidate();
                 }
             }else{
                 JOptionPane.showMessageDialog(this, "Algún campo es inválido", "Error", JOptionPane.ERROR_MESSAGE);

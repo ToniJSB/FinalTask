@@ -10,6 +10,8 @@ import org.hibernate.Session;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -45,7 +47,19 @@ public class CalendarPanel extends JPanel {
 
         instanceComponents();
         setDisplayDaily();
+    }
 
+    public CalendarPanel(Session session) {
+        super();
+//        this.medicoField = medicoField;
+//        this.parent = parent;
+//        this.dailyPlan = dailyPlan;
+//        appDisplay = displayLayout;
+        serviceCita = new ServiceCita(session);
+        serviceMedico = new ServiceMedico(session);
+
+        instanceComponents();
+        setDisplayDaily();
     }
 
     public CalendarPanel(JTextField birtdayDateField) {
@@ -167,17 +181,25 @@ public class CalendarPanel extends JPanel {
         LocalDate fechaActual = primerDiaMes;
         while (fechaActual.isBefore(ultimoDiaMes.plusDays(1))) {
             JButton boton = new JButton(String.valueOf(fechaActual.getDayOfMonth()));
-            if (fechaActual.equals(LocalDate.now())) {
+            if (fechaActual.equals(LocalDate.now().plusDays(1))) {
                 // TODO Poner color distinto al Backround del dia de hoy
-//                boton.setBorder(BorderFactory.createLineBorder(Color.BLUE,1));
                 boton.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-//                boton.setBackground(Color.YELLOW);
             }
             LocalDate finalFechaActual = fechaActual;
             if(dailyPlan == null){
                 boton.addActionListener(e -> getBDate(finalFechaActual));
             }else {
-                boton.addActionListener(e -> showDailyPlan(finalFechaActual));
+                if (fechaActual.isBefore(LocalDate.now().plusDays(1))) {
+                    boton.setForeground(Color.DARK_GRAY); // Días del mes anterior en gris
+                    boton.setEnabled(false); // Deshabilitar botones de días no pertenecientes al mes actual
+                }
+                boton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        boton.setBackground(Color.GREEN);
+                        showDailyPlan(finalFechaActual);
+                    }
+                });
             }
 
             panelCalendario.add(boton);

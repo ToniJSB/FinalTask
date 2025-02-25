@@ -29,7 +29,7 @@ public class DailyPlan extends JPanel {
     private JPanel container;
 
     public DailyPlan(LocalDate day, ServiceMedico serviceMedico, ServiceCita serviceCita, Medico medico, DisplayLayout appDisplay) {
-        super(new BorderLayout()); // Usar BorderLayout para expandir el scroll
+        setLayout(new BorderLayout());// Usar BorderLayout para expandir el scroll
         this.dayDate = day;
         this.serviceCita = serviceCita;
         this.serviceMedico = serviceMedico;
@@ -105,9 +105,23 @@ public class DailyPlan extends JPanel {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                serviceCita.createCita(date,medicoOfDay,time, TipoCita.PRESENCIAL);
                 JDialog noti = new JDialog();
-                JLabel label = new JLabel("Cita concedida.");
+                JLabel label = new JLabel();
+                if (date.after(Utils.DateFormat.asDate(LocalDate.now().plusDays(1)))){
+                    Cita exist = serviceCita.askCitaByDateTimeMedico(date,time, medicoOfDay);
+                    if (exist == null){
+                        label.setText("Cita concedida.");
+                        serviceCita.createCita(date,medicoOfDay,time, TipoCita.PRESENCIAL);
+//                        ((CardLayout)fullAppDisplay.getBody().getLayout()).show(fullAppDisplay.getBody(),"PERFIL");
+                        fullAppDisplay.getBody().repaint();
+                        fullAppDisplay.getBody().revalidate();
+                    }else {
+                        label.setText("Cita inaccesible");
+
+                    }
+                }else {
+                    label.setText("Cita inaccesible");
+                }
                 noti.add(label);
                 noti.setVisible(true);
                 noti.setSize(150,150);
@@ -120,9 +134,8 @@ public class DailyPlan extends JPanel {
                 // Establecer la posición del diálogo
                 noti.setLocation(x, y);
                 citasByDayDate = serviceCita.askCitasByDayWithMedico(date, medicoOfDay);
-                revalidate();
-                repaint();
-                ((CardLayout)fullAppDisplay.getBody().getLayout()).show(fullAppDisplay.getBody(),"PERFIL");
+                remove(container);
+                setDisplay();
             }
         };
     }

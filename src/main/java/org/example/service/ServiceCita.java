@@ -31,6 +31,10 @@ public class ServiceCita {
         return daoCita.getCitasFromPaciente(paciente);
     }
 
+    public Cita askCitaByDateTimeMedico(Date date, LocalTime localTime, Medico medico){
+        return daoCita.getCitasByDateTimeWithDoctor(date,localTime,medico);
+    }
+
     public void createCita(Date localDate, Medico medico, LocalTime localTime, TipoCita tipoCita){
         daoCita.saveCita(new Cita(DisplayLayout.pacienteSession,medico, localDate, localTime, tipoCita));
     }

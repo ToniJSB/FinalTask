@@ -2,7 +2,6 @@ package org.example.models;
 
 import jakarta.persistence.*;
 
-import javax.crypto.spec.OAEPParameterSpec;
 import java.time.LocalDate;
 
 @Entity
