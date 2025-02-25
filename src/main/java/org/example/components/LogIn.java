@@ -42,8 +42,7 @@ public class LogIn  extends JPanel {
 
     private JPanel setDisplay(){
         JPanel innerContainer = new JPanel();
-        innerContainer.setLayout(new GridLayout(3,1));
-        innerContainer.setBackground(new Color(15,15,15));
+        innerContainer.setLayout(new BoxLayout(innerContainer,BoxLayout.Y_AXIS));
 
         instanceComponents();
         setLoginFormPanel();
@@ -52,11 +51,11 @@ public class LogIn  extends JPanel {
         appendLogo(innerContainer);
 
         innerContainer.setOpaque(false);
+        loginFormPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         innerContainer.add(loginFormPanel);
         innerContainer.add(buttonsFormPanel);
 
-        setBackground(new Color(5,215,125));
-        setLayout(new FlowLayout(FlowLayout.CENTER,20,100));
+        setLayout(new FlowLayout(FlowLayout.CENTER));
         add(innerContainer);
         return innerContainer;
 
@@ -79,16 +78,20 @@ public class LogIn  extends JPanel {
     }
 
     private void setButtonsFormPanel(){
-        registrarButton.setSize(10,10);
-        iniciarSesionButton.setSize(10,10);
+//        registrarButton.setSize(10,10);
+//        iniciarSesionButton.setSize(10,10);
+        registrarButton.setPreferredSize(new Dimension(150,50));
+        iniciarSesionButton.setPreferredSize(new Dimension(150,50));
 
         buttonsFormPanel.add(registrarButton);
         buttonsFormPanel.add(iniciarSesionButton);
-        buttonsFormPanel.setBackground(new Color(150,20,52));
-        buttonsFormPanel.setSize(10,10);
         buttonsFormPanel.setLayout(new GridLayout());
     }
     private void setLoginFormPanel(){
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension dim = new Dimension();
+        dim.setSize(screenSize.getWidth()/3,screenSize.getHeight()/10);
+
         emailPanel.setLayout(new GridLayout(1,2));
         emailPanel.add(emailLabel);
         emailPanel.add(emailField);
@@ -99,12 +102,14 @@ public class LogIn  extends JPanel {
         passwordPanel.setLayout(new GridLayout(1,2));
         passwordPanel.add(passwordLabel);
         passwordPanel.add(passwordField);
+//        Dimension btnDim = new Dimension();
+//        btnDim.setSize(screenSize.getWidth()/3,screenSize.getHeight()/16);
+//        passwordPanel.setPreferredSize(btnDim);
+//        passwordPanel.setSize(btnDim);
 
         loginFormPanel.add(passwordPanel);
-
-        emailPanel.setSize(80,80);
-        passwordPanel.setSize(80,80);
-        loginFormPanel.setSize( 0, 0);
+        loginFormPanel.setPreferredSize(dim);
+        loginFormPanel.setSize(dim);
 
         loginFormPanel.setLayout(new GridLayout(2,1));
 
@@ -113,13 +118,13 @@ public class LogIn  extends JPanel {
 
     private void appendLogo(JPanel innerContainer){
         try{
-            File file = new File("./src/main/resources/img.png");
+            File file = new File("./src/main/resources/img-Photoroom.png");
 
             Image originalImage = ImageIO.read(file);
 
             // Escalar la imagen
             int newWidth = 200;
-            int newHeight = 150;
+            int newHeight = 200;
             Image scaledImage = originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
             ImageIcon imageIcon = new ImageIcon(scaledImage);
 

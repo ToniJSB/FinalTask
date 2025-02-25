@@ -1,5 +1,6 @@
 package org.example;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
@@ -22,14 +23,14 @@ public class App {
     private AccessDB accessDB;
     private Session dbSession;
 
-    public App() {
+    public App() throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 
         JFrame frame = new JFrame("Acceso: Hospital tramuntana");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        OwnTheme.setup();
         Image icon = Utils.getLogo();
         frame.setIconImage(icon);
-        System.out.println(frame.getIconImage());
         accessDB = new AccessDB();
         openSession();
         createMedicos();
@@ -181,9 +182,6 @@ public class App {
         }
         return true;
     }
-
-
-
 
 
 }

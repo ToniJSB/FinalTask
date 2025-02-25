@@ -143,6 +143,9 @@ public class SignIn extends JPanel {
         }else{
             JPanel calendarContainer = new JPanel(new FlowLayout(FlowLayout.LEFT));
             JButton openCalendar = new JButton("Abrir calendario");
+            if(userSession != null){
+                openCalendar.setEnabled(false);
+            }
             openCalendar.addActionListener(e -> new CalendarPanel((JTextField) field));
             calendarContainer.add(field);
             calendarContainer.add(openCalendar);

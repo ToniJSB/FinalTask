@@ -171,7 +171,7 @@ public class CalendarPanel extends JPanel {
 
         for (int i = 0; i < diasMesAnterior; i++) {
             JButton boton = new JButton(String.valueOf(fechaMesAnterior.getDayOfMonth()));
-            boton.setForeground(Color.GRAY); // Días del mes anterior en gris
+//            boton.setForeground(Color.DARK_GRAY); // Días del mes anterior en gris
             boton.setEnabled(false); // Deshabilitar botones de días no pertenecientes al mes actual
             panelCalendario.add(boton);
             fechaMesAnterior = fechaMesAnterior.plusDays(1);
@@ -212,7 +212,7 @@ public class CalendarPanel extends JPanel {
 
         for (int i = 0; i < celdasRestantes; i++) {
             JButton boton = new JButton(String.valueOf(fechaMesSiguiente.getDayOfMonth()));
-            boton.setForeground(Color.GRAY); // Días del mes siguiente en gris
+            boton.setForeground(Color.DARK_GRAY); // Días del mes siguiente en gris
             boton.setEnabled(false); // Deshabilitar botones de días no pertenecientes al mes actual
             panelCalendario.add(boton);
             fechaMesSiguiente = fechaMesSiguiente.plusDays(1);

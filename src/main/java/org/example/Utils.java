@@ -23,9 +23,18 @@ public class Utils {
         return DateTimeFormatter.ofPattern(format);
 
     }
+
+    public static String capitalizeFirtsLetter(String texto) {
+        if (texto == null || texto.isEmpty()) {
+            return texto; // Devuelve la cadena original si es nula o vacía
+        }
+        // Convierte la primera letra a mayúscula y concatena el resto
+        return texto.substring(0, 1).toUpperCase() + texto.substring(1).toLowerCase();
+    }
+
     public static Image getLogo(){
         try{
-            File file = new File("./src/main/resources/img.png");
+            File file = new File("./src/main/resources/img-Photoroom.png");
             return new ImageIcon(ImageIO.read(file)).getImage();
         } catch (IOException e) {
             throw new RuntimeException(e);

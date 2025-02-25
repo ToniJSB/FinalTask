@@ -1,20 +1,25 @@
 package org.example.components;
 
+import org.example.Utils;
 import org.example.models.Medico;
 import org.example.service.ServiceMedico;
 import org.hibernate.Session;
 
 import javax.swing.*;
 import javax.swing.event.CellEditorListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
+import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.EventObject;
 import java.util.List;
+import java.util.Locale;
 
 public class Medicos extends JPanel {
     private JPanel superContainer;
@@ -40,17 +45,102 @@ public class Medicos extends JPanel {
         superContainer = new JPanel();
         medicosList = serviceMedico.getAllMedicos();
         container = new JPanel();
+        name = new JTextField(15);
+        apellidos = new JTextField(15);
+        especialidad = new JTextField(15);
 
         setupLayout();
-        name.addActionListener(new ActionListener() {
+        name.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                medicosList = serviceMedico.getMedicosByEspecialidadPlusName(especialidad.getText(),name.getText(),apellidos.getText());
-                superContainer.remove(container);
+            public void insertUpdate(DocumentEvent e) {
+                medicosList = serviceMedico.getMedicosByEspecialidadPlusName(Utils.capitalizeFirtsLetter(especialidad.getText()),Utils.capitalizeFirtsLetter(name.getText()),Utils.capitalizeFirtsLetter(apellidos.getText()));
+
+                superContainer.removeAll();
+//                superContainer = new JPanel();
+                container = new JPanel();
+                tabla = new JTable();
+                repaint();
+                revalidate();
                 setupLayout();
+                name.requestFocus();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                medicosList = serviceMedico.getMedicosByEspecialidadPlusName(Utils.capitalizeFirtsLetter(especialidad.getText()),Utils.capitalizeFirtsLetter(name.getText()),Utils.capitalizeFirtsLetter(apellidos.getText()));
+
+                superContainer.removeAll();
+//                superContainer = new JPanel();
+                container = new JPanel();
+                tabla = new JTable();
+                repaint();
+                revalidate();
+                setupLayout();
+                name.requestFocus();
+
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                medicosList = serviceMedico.getMedicosByEspecialidadPlusName(Utils.capitalizeFirtsLetter(especialidad.getText()),Utils.capitalizeFirtsLetter(name.getText()),Utils.capitalizeFirtsLetter(apellidos.getText()));
+
+                superContainer.removeAll();
+//                superContainer = new JPanel();
+                container = new JPanel();
+                tabla = new JTable();
+                repaint();
+                revalidate();
+                setupLayout();
+                name.requestFocus();
+
             }
         });
+        apellidos.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updateLayout();
+                apellidos.requestFocus();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updateLayout();
+                apellidos.requestFocus();
+
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                updateLayout();
+                apellidos.requestFocus();
+
+            }
+        });
+        especialidad.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updateLayout();
+                especialidad.requestFocus();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updateLayout();
+                especialidad.requestFocus();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                updateLayout();
+                especialidad.requestFocus();
+
+            }
+        });
+
+
     }
+
+
 
     private void setupLayout() {
         GridBagConstraints gbc = new GridBagConstraints();
@@ -74,18 +164,12 @@ public class Medicos extends JPanel {
 
         JPanel searchContainer = new JPanel();
         searchContainer.setLayout(new GridBagLayout());
-//        searchContainer.setSize(100,200);
-        name = new JTextField(15);
-        apellidos = new JTextField(15);
-        especialidad = new JTextField(15);
+
         int row=0;
         addField(gbc, row++, "Nombre del doctor: ", name, searchContainer);
         addField(gbc, row++, "Apellidos", apellidos, searchContainer);
         addField(gbc, row++, "Especialidad", especialidad, searchContainer);
 
-//        searchContainer.add(name);
-//        searchContainer.add(apellidos);
-//        searchContainer.add(especialidad);
         superContainer.add(searchContainer);
         superContainer.add(container);
         add(superContainer);
@@ -118,17 +202,16 @@ public class Medicos extends JPanel {
 
     }
 
-    private void btnSetMedico(JButton btn){
-        btn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println(btn.getName());
-                txtNameMedico.setText(btn.getName());
-                ((CardLayout)getParent().getLayout()).show(getParent(),"CALENDAR");
-                superContainer.getParent().repaint();
-                superContainer.getParent().revalidate();
-            }
-        });
+    private void updateLayout(){
+        medicosList = serviceMedico.getMedicosByEspecialidadPlusName(Utils.capitalizeFirtsLetter(especialidad.getText()),Utils.capitalizeFirtsLetter(name.getText()),Utils.capitalizeFirtsLetter(apellidos.getText()));
+
+        superContainer.removeAll();
+//                superContainer = new JPanel();
+        container = new JPanel();
+        tabla = new JTable();
+        repaint();
+        revalidate();
+        setupLayout();
     }
 
     // Renderizador personalizado para botones
