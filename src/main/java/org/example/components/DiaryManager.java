@@ -9,7 +9,6 @@ public class DiaryManager {
     private static final LocalTime END_TIME = LocalTime.of(18, 0);
     private static final Duration APPOINTMENT_DURATION = Duration.ofMinutes(30);
 
-    private List<TimeInterval> appointments = new ArrayList<>();
 
     // Clase interna para representar intervalos de tiempo
     private static class TimeInterval {
@@ -39,52 +38,5 @@ public class DiaryManager {
         return slots;
     }
 
-    // Agregar nueva cita
-    public boolean addAppointment(LocalTime startTime) {
-        TimeInterval newAppointment = new TimeInterval(startTime);
-
-        // Validar horario
-        if (startTime.isBefore(START_TIME) || newAppointment.end.isAfter(END_TIME)) {
-            return false;
-        }
-
-        // Verificar solapamientos
-        for (TimeInterval existing : appointments) {
-            if (existing.overlaps(newAppointment)) {
-                return false;
-            }
-        }
-
-        appointments.add(newAppointment);
-        return true;
-    }
-
-    // Calcular tiempo total de citas
-    public Duration calculateTotalAppointmentsTime() {
-        return Duration.ofMinutes(appointments.size() * 30);
-    }
-
-    // Mostrar citas existentes
-    public void printAppointments() {
-        System.out.println("Citas agendadas:");
-        appointments.forEach(appt ->
-                System.out.printf("%s - %s\n", appt.start, appt.end));
-    }
-
-    // Mostrar slots disponibles
-    public void printAvailableSlots() {
-        List<LocalTime> allSlots = generateAllTimeSlots();
-        System.out.println("\nHorarios disponibles:");
-
-        allSlots.forEach(slot -> {
-            TimeInterval temp = new TimeInterval(slot);
-            boolean available = appointments.stream()
-                    .noneMatch(appt -> appt.overlaps(temp));
-
-            if (available) {
-                System.out.printf("%s - %s\n", slot, slot.plus(APPOINTMENT_DURATION));
-            }
-        });
-    }
 
 }

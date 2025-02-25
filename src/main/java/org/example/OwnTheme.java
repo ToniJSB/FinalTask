@@ -10,6 +10,7 @@ public class OwnTheme extends FlatLightLaf {
         UIManager.put("Button.background", new Color(98, 182, 203));
         UIManager.put("Panel.background", new Color(189, 233, 231));
         UIManager.put("Button.hoverBackground", new Color(94,168,211));
+        UIManager.put("Table.alternateRowColor", new Color(94,168,211));
 
     }
 

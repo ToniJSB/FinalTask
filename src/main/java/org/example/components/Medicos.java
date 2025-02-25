@@ -179,7 +179,6 @@ public class Medicos extends JPanel {
     private JTable initTable(){
         DefaultTableModel model = new DefaultTableModel(COLUMNAS, 0);
         for (Medico medico: medicosList) {
-            System.out.println(medico.simpleInfo());
             String medicoId = String.valueOf(medico.getIdMedico());
             String especializacion = medico.getEspecialidad();
             String nombre = medico.getNombre();
@@ -238,7 +237,8 @@ public class Medicos extends JPanel {
             super(checkBox);
             this.table = table; // Guardar la referencia de la tabla
             button = new JButton();
-            button.setOpaque(true);
+
+            button.setOpaque(false);
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -321,4 +321,5 @@ public class Medicos extends JPanel {
 
         }
     }
+
 }

@@ -24,6 +24,17 @@ public class Utils {
 
     }
 
+    public static JFrame obtenerFrameDesdeComponente(Component componente) {
+        // Recorrer la jerarquía de contenedores
+        while (componente != null) {
+            if (componente instanceof JFrame) {
+                return (JFrame) componente; // Devolver el JFrame encontrado
+            }
+            componente = componente.getParent(); // Subir al siguiente contenedor
+        }
+        return null; // Si no se encuentra un JFrame
+    }
+
     public static String capitalizeFirtsLetter(String texto) {
         if (texto == null || texto.isEmpty()) {
             return texto; // Devuelve la cadena original si es nula o vacía

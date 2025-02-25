@@ -99,6 +99,9 @@ public class Medico {
         this.businessDays = businessDays;
     }
 
+    public String getFullName(){
+        return "%s %s".formatted(nombre,apellidos);
+    }
     public String simpleInfo(){
         return "%s - %s %s".formatted(especialidad,nombre,apellidos);
     }

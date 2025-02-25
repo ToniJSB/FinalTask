@@ -5,6 +5,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.example.Utils;
+import org.example.components.DisplayLayout;
 import org.example.models.HistorialMedico;
 import org.example.models.Paciente;
 
@@ -18,8 +19,9 @@ public class PdfCreator {
 
     }
 
-    public void genPDF(Paciente paciente, List<HistorialMedico> historialCompletoMedico){
+    public void genPDF(List<HistorialMedico> historialCompletoMedico){
         // Generar el PDF
+        Paciente paciente = DisplayLayout.pacienteSession;
         try {
             Document document= new Document();
             PdfWriter.getInstance(document, new FileOutputStream("HistorialMedico.pdf"));
@@ -75,7 +77,6 @@ public class PdfCreator {
             // Cerrar el documento
             document.close();
 
-            System.out.println("PDF generado correctamente.");
 
         } catch (Exception e) {
             e.printStackTrace();

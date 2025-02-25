@@ -24,7 +24,6 @@ public class CHistorialMedico extends JPanel {
 
     private void setDisplay() {
         setLayout(new CardLayout());
-        System.out.println();
         List<HistorialMedico> listHMedico = serviceHistorialMedico.askHistorialMedicoFromPaciente(DisplayLayout.pacienteSession);
         String[] columnas = {"Fecha","Diagnóstico", "Tratamiento", "Acciones"};
         DefaultTableModel model = new DefaultTableModel(columnas,0);

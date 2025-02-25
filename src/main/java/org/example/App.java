@@ -34,6 +34,8 @@ public class App {
         accessDB = new AccessDB();
         openSession();
         createMedicos();
+        Font fuente = new Font("Verdana", Font.BOLD, 25);
+        cambiarFuenteComponentes(frame, fuente);
         frame.add(initRouting(dbSession));
         frame.setVisible(true);
 
@@ -183,5 +185,13 @@ public class App {
         return true;
     }
 
+    public static void cambiarFuenteComponentes(Container contenedor, Font fuente) {
+        for (Component componente : contenedor.getComponents()) {
+            componente.setFont(fuente);
+            if (componente instanceof Container) {
+                cambiarFuenteComponentes((Container) componente, fuente); // Recursividad para contenedores anidados
+            }
+        }
+    }
 
 }

@@ -1,19 +1,27 @@
 package org.example.components;
 
+import org.example.Utils;
 import org.example.models.Cita;
 import org.example.models.EstadoCita;
+import org.example.models.Medico;
 import org.example.service.ServiceCita;
 import org.example.service.ServicePaciente;
 import org.hibernate.Session;
 
 import javax.swing.*;
+import javax.swing.event.CellEditorListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
+import java.util.EventObject;
 import java.util.List;
 
 public class Profile extends JPanel {
+
+    private final String[] COLUMNAS = {"Fecha","Hora","Especialidad","Nombre", "Acciones"};
     private ServicePaciente servicePaciente;
     private ServiceCita serviceCita;
 
@@ -24,6 +32,7 @@ public class Profile extends JPanel {
     private LocalDate birthdate;
     private SignIn editableForm;
     private JPanel panelCitas;
+    private JTable tablaCitas;
     private JPanel panelCita;
 
 
@@ -80,25 +89,32 @@ public class Profile extends JPanel {
     }
 
     private void createCitasPanel(){
-        List<Cita> citas = serviceCita.askCitasByPaciente(DisplayLayout.pacienteSession);
-        panelCitas = new JPanel(new GridLayout(citas.size(),1));
-        for(Cita cita: citas){
-            panelCita = new JPanel();
-            panelCita.add(new JLabel(cita.getInfo()));
-            JButton reprogramarBtn = new JButton("Reprogramar");
-            JButton cancelarBtn = new JButton("Cancelar");
-            cancelarBtn.addActionListener(cancelarCita(cita));
-            panelCita.add(reprogramarBtn);
-            panelCita.add(cancelarBtn);
-            panelCitas.add(panelCita);
-        }
+        panelCitas = new JPanel();
+        initTable();
+        JScrollPane scrollPane = new JScrollPane(tablaCitas);
+        panelCitas.add(scrollPane);
     }
 
+    private void initTable(){
+        List<Cita> citas = serviceCita.askCitasByPaciente(DisplayLayout.pacienteSession);
+
+        DefaultTableModel model = new DefaultTableModel(COLUMNAS, 0);
+        for (Cita cita : citas) {
+            String fechaCita = Utils.DateFormat.dateAsStringDateF(cita.getFechaCita());
+
+            String horaCita = cita.getHoraCita().toString();
+            String especialidad = cita.getMedico().getEspecialidad();
+            String nombre = cita.getMedico().getFullName();
+            String[] fila = {fechaCita, horaCita,especialidad, nombre,"Acciones"};
+
+            model.addRow(fila);
+        }
+        tablaCitas =  new JTable(model);
+    }
     private ActionListener cancelarCita(Cita cita){
         return e -> {
             cita.setEstado(EstadoCita.CANCELADA);
-            serviceCita.actualizarCita(cita);
-            System.out.println("reprogramada");
+            serviceCita.updateCita(cita);
             remove(panelCitas);
             repaint();
             revalidate();
@@ -110,8 +126,9 @@ public class Profile extends JPanel {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cita.setEstado(EstadoCita.REPROGRAMADA);
-                serviceCita.actualizarCita(cita);
+                new Calendar(serviceCita.getSession(), cita);
+//                cita.setEstado(EstadoCita.REPROGRAMADA);
+//                serviceCita.actualizarCita(cita);
             }
         };
     }

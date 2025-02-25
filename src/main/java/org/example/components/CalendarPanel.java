@@ -2,6 +2,7 @@ package org.example.components;
 
 import org.example.Constants;
 import org.example.Utils;
+import org.example.models.Cita;
 import org.example.models.Medico;
 import org.example.service.ServiceCita;
 import org.example.service.ServiceMedico;
@@ -35,6 +36,7 @@ public class CalendarPanel extends JPanel {
     private ServiceCita serviceCita;
     private ServiceMedico serviceMedico;
     private DisplayLayout appDisplay;
+    private Cita cita;
 
     public CalendarPanel(JPanel parent, DailyPlan dailyPlan, Session session, JTextField medicoField, DisplayLayout displayLayout) {
         super();
@@ -49,15 +51,13 @@ public class CalendarPanel extends JPanel {
         setDisplayDaily();
     }
 
-    public CalendarPanel(Session session) {
+    public CalendarPanel(JPanel parent,DailyPlan dailyPlan, Session session, Cita cita) {
         super();
-//        this.medicoField = medicoField;
-//        this.parent = parent;
-//        this.dailyPlan = dailyPlan;
-//        appDisplay = displayLayout;
+        this.cita = cita;
+        this.parent = parent;
+        this.dailyPlan = dailyPlan;
         serviceCita = new ServiceCita(session);
         serviceMedico = new ServiceMedico(session);
-
         instanceComponents();
         setDisplayDaily();
     }
@@ -141,7 +141,7 @@ public class CalendarPanel extends JPanel {
 
         // Panel del calendario
         panelCalendario.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        panelCalendario.setBackground(Color.CYAN);
+        panelCalendario.setBackground(new Color(94,168,211));
         calendarContainer.add(panelCalendario, BorderLayout.CENTER);
         add(calendarContainer);
         actualizarCalendario();
@@ -181,6 +181,7 @@ public class CalendarPanel extends JPanel {
         LocalDate fechaActual = primerDiaMes;
         while (fechaActual.isBefore(ultimoDiaMes.plusDays(1))) {
             JButton boton = new JButton(String.valueOf(fechaActual.getDayOfMonth()));
+            boton.setMargin(new Insets(5,5,5,5));
             if (fechaActual.equals(LocalDate.now().plusDays(1))) {
                 // TODO Poner color distinto al Backround del dia de hoy
                 boton.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
@@ -188,7 +189,7 @@ public class CalendarPanel extends JPanel {
             LocalDate finalFechaActual = fechaActual;
             if(dailyPlan == null){
                 boton.addActionListener(e -> getBDate(finalFechaActual));
-            }else {
+            } else if (cita != null) {
                 if (fechaActual.isBefore(LocalDate.now().plusDays(1))) {
                     boton.setForeground(Color.DARK_GRAY); // Días del mes anterior en gris
                     boton.setEnabled(false); // Deshabilitar botones de días no pertenecientes al mes actual
@@ -196,7 +197,20 @@ public class CalendarPanel extends JPanel {
                 boton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        boton.setBackground(Color.GREEN);
+//                        boton.setBackground(Color.GREEN);
+                        showReprogramaDailyPlan(finalFechaActual);
+                    }
+                });
+
+            } else {
+                if (fechaActual.isBefore(LocalDate.now().plusDays(1))) {
+                    boton.setForeground(Color.DARK_GRAY); // Días del mes anterior en gris
+                    boton.setEnabled(false); // Deshabilitar botones de días no pertenecientes al mes actual
+                }
+                boton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+//                        boton.setBackground(Color.GREEN);
                         showDailyPlan(finalFechaActual);
                     }
                 });
@@ -228,9 +242,18 @@ public class CalendarPanel extends JPanel {
         setVisible(false);
         window.dispose();
     }
+    private void showReprogramaDailyPlan(LocalDate fecha) {
+        parent.remove(dailyPlan);
+        dailyPlan = new DailyPlan(fecha, serviceCita,cita);
+//        dailyPlan.setMedicoOfDay(serviceMedico.getMedicoById(Integer.parseInt(medicoField.getText())));
+        parent.add(dailyPlan);
+
+        revalidate();
+        repaint();
+    }
     private void showDailyPlan(LocalDate fecha) {
         parent.remove(dailyPlan);
-        dailyPlan = new DailyPlan(fecha, serviceMedico, serviceCita,serviceMedico.getMedicoById(Integer.parseInt(medicoField.getText())),appDisplay);
+        dailyPlan = new DailyPlan(fecha, serviceCita,serviceMedico.getMedicoById(Integer.parseInt(medicoField.getText())),appDisplay);
 //        dailyPlan.setMedicoOfDay(serviceMedico.getMedicoById(Integer.parseInt(medicoField.getText())));
         parent.add(dailyPlan);
 

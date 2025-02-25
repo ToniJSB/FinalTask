@@ -2,15 +2,12 @@ package org.example.service;
 
 import org.example.components.DisplayLayout;
 import org.example.dao.DaoCita;
-import org.example.dao.DaoPaciente;
 import org.example.models.Cita;
 import org.example.models.Medico;
 import org.example.models.Paciente;
 import org.example.models.TipoCita;
 import org.hibernate.Session;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
@@ -45,7 +42,7 @@ public class ServiceCita {
 
 
     // Actualizar una cita existente
-    public void actualizarCita(Cita cita) {
+    public void updateCita(Cita cita) {
         daoCita.update(cita);
     }
 

@@ -3,6 +3,7 @@ package org.example.components;
 import org.example.Constants;
 import org.example.Utils;
 import org.example.models.Cita;
+import org.example.models.EstadoCita;
 import org.example.models.Medico;
 import org.example.models.TipoCita;
 import org.example.service.ServiceCita;
@@ -16,25 +17,32 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.awt.*;
-import java.util.stream.Collectors;
 
 public class DailyPlan extends JPanel {
-    private final int maxDateByDay = Constants.MAX_DATES_X_DAY;
     private LocalDate dayDate;
     private DisplayLayout fullAppDisplay;
     private List<Cita> citasByDayDate;
     private ServiceCita serviceCita;
     private ServiceMedico serviceMedico;
     private Medico medicoOfDay;
+    private Cita cita;
     private JPanel container;
 
-    public DailyPlan(LocalDate day, ServiceMedico serviceMedico, ServiceCita serviceCita, Medico medico, DisplayLayout appDisplay) {
+    public DailyPlan(LocalDate day,ServiceCita serviceCita, Medico medico, DisplayLayout appDisplay) {
         setLayout(new BorderLayout());// Usar BorderLayout para expandir el scroll
         this.dayDate = day;
         this.serviceCita = serviceCita;
-        this.serviceMedico = serviceMedico;
         fullAppDisplay = appDisplay;
         medicoOfDay = medico;
+        citasByDayDate = serviceCita.askCitasByDayWithMedico(Utils.DateFormat.asDate(dayDate), medicoOfDay);
+        setDisplay();
+    }
+    public DailyPlan(LocalDate day,ServiceCita serviceCita, Cita cita) {
+        setLayout(new BorderLayout());// Usar BorderLayout para expandir el scroll
+        this.dayDate = day;
+        this.serviceCita = serviceCita;
+        this.cita = cita;
+        medicoOfDay = cita.getMedico();
         citasByDayDate = serviceCita.askCitasByDayWithMedico(Utils.DateFormat.asDate(dayDate), medicoOfDay);
         setDisplay();
     }
@@ -64,7 +72,6 @@ public class DailyPlan extends JPanel {
 
             List<Cita> citasEnIntervalo = new ArrayList<>();
             for (Cita cita : citasByDayDate){
-                System.out.println(cita.getHoraCita());
                 if (cita.getHoraCita().equals(interval)){
                     citasEnIntervalo.add(cita);
                 }
@@ -75,7 +82,12 @@ public class DailyPlan extends JPanel {
 
             if(citasEnIntervalo.isEmpty()){
                 JButton buttonSetterCita = new JButton("CITA LIBRE: " + interval);
-                buttonSetterCita.addActionListener(setActionBtnCita(dateCita,interval));
+                if (cita != null){
+
+                    buttonSetterCita.addActionListener(setActionBtnCita(dateCita,interval));
+                }else {
+                    buttonSetterCita.addActionListener(setActionBtnCita(dateCita,interval));
+                }
                 cell.add(buttonSetterCita);
                 cell.setAlignmentX(Component.LEFT_ALIGNMENT); // Alinear a la izquierda
                 gridDay.add(cell);
@@ -111,10 +123,19 @@ public class DailyPlan extends JPanel {
                     Cita exist = serviceCita.askCitaByDateTimeMedico(date,time, medicoOfDay);
                     if (exist == null){
                         label.setText("Cita concedida.");
-                        serviceCita.createCita(date,medicoOfDay,time, TipoCita.PRESENCIAL);
+                        if (cita !=null) {
+                            cita.setEstado(EstadoCita.PROGRAMADA);
+                            cita.setFechaCita(date);
+                            cita.setHoraCita(time);
+                            serviceCita.updateCita(cita);
+                            JFrame window = Utils.obtenerFrameDesdeComponente(container);
+                            window.dispose();
+                        }else{
+                            serviceCita.createCita(date,medicoOfDay,time, TipoCita.VIDEOLLAMADA);
+                            fullAppDisplay.getBody().repaint();
+                            fullAppDisplay.getBody().revalidate();
+                        }
 //                        ((CardLayout)fullAppDisplay.getBody().getLayout()).show(fullAppDisplay.getBody(),"PERFIL");
-                        fullAppDisplay.getBody().repaint();
-                        fullAppDisplay.getBody().revalidate();
                     }else {
                         label.setText("Cita inaccesible");
 
@@ -125,11 +146,8 @@ public class DailyPlan extends JPanel {
                 noti.add(label);
                 noti.setVisible(true);
                 noti.setSize(150,150);
-                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-                // Calcular la posición para centrar el diálogo
-                int x = (screenSize.width - noti.getWidth()) / 2;
-                int y = (screenSize.height - noti.getHeight()) / 2;
+                int x = (Constants.SCREEN_SIZE.width - noti.getWidth()) / 2;
+                int y = (Constants.SCREEN_SIZE.height - noti.getHeight()) / 2;
 
                 // Establecer la posición del diálogo
                 noti.setLocation(x, y);

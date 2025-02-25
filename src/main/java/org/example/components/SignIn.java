@@ -190,7 +190,6 @@ public class SignIn extends JPanel {
                                 Integer.parseInt(bDateSplit[0]))
                         );
             }else{
-                System.out.println("contraseña vacía");
                 created = servicePaciente.updatePaciente(
                         Integer.parseInt(txtId.getText()),
                         txtNombre.getText(),

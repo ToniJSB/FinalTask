@@ -1,6 +1,7 @@
 package org.example.components;
 
 import org.example.App;
+import org.example.Constants;
 import org.example.models.Paciente;
 import org.example.service.ServicePaciente;
 import org.hibernate.Session;
@@ -34,9 +35,9 @@ public class LogIn  extends JPanel {
 //        setLoginFormPanel();
         dbSession = session;
         servicePaciente = new ServicePaciente(session);
-        setDisplay();
         initPanel = mainPanel;
         initLayout = mainLayout;
+        setDisplay();
         setActionsButtons(mainPanel, mainLayout);
     }
 
@@ -140,20 +141,22 @@ public class LogIn  extends JPanel {
         String password = new String(passwordField.getPassword());
         Paciente pacienteLogged = servicePaciente.getPacienteByEmail(email);
         boolean result = false;
-        if (servicePaciente.isValidPassowrd(password,pacienteLogged.getPassword())){
-            JButton[] botones = {new JButton("Historial"), new JButton("Perfil"), new JButton("Calendario")};
+        if (pacienteLogged!=null){
+            if (servicePaciente.isValidPassowrd(password,pacienteLogged.getPassword())){
+                JButton[] botones = {new JButton("Historial"), new JButton("Perfil"), new JButton("Calendario")};
 
-            DisplayLayout.pacienteSession = pacienteLogged;
-            DisplayLayout displayLayout =  new DisplayLayout(initLayout,botones);
-            Profile profile = new Profile(dbSession);
-            CHistorialMedico historialMedico = new CHistorialMedico(dbSession);
-            Calendar calendario = new Calendar(dbSession,displayLayout);
+                DisplayLayout.pacienteSession = pacienteLogged;
+                DisplayLayout displayLayout =  new DisplayLayout(initLayout,botones);
+                Profile profile = new Profile(dbSession);
+                CHistorialMedico historialMedico = new CHistorialMedico(dbSession);
+                Calendar calendario = new Calendar(dbSession,displayLayout);
 
-            displayLayout.appendBody(profile,"PERFIL");
-            displayLayout.appendBody(historialMedico,"HISTORIAL");
-            displayLayout.appendBody(calendario, "CALENDARIO");
-            initPanel.add(displayLayout,"DISPLAY");
-            result = true;
+                displayLayout.appendBody(profile,"PERFIL");
+                displayLayout.appendBody(historialMedico,"HISTORIAL");
+                displayLayout.appendBody(calendario, "CALENDARIO");
+                initPanel.add(displayLayout,"DISPLAY");
+                result = true;
+            }
         }
         return result;
     }
@@ -164,6 +167,18 @@ public class LogIn  extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 if(login()){
                     mainLayout.show(mainPanel,"DISPLAY");
+                }else{
+                    JDialog notificacion = new JDialog();
+                    JLabel text = new JLabel("Campos incorrectos");
+                    notificacion.add(text);
+                    notificacion.setVisible(true);
+                    notificacion.setSize(150,150);
+                    int x = (Constants.SCREEN_SIZE.width - notificacion.getWidth()) / 2;
+                    int y = (Constants.SCREEN_SIZE.height - notificacion.getHeight()) / 2;
+
+                    // Establecer la posición del diálogo
+                    notificacion.setLocation(x, y);
+
                 }
             }
         });

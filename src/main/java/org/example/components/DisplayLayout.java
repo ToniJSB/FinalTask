@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 
 public class DisplayLayout extends JPanel{
     private JPanel aside;
+    private JPanel innerAside;
     private JPanel body;
     private JPanel bottom;
     private JPanel top;
@@ -37,6 +38,8 @@ public class DisplayLayout extends JPanel{
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         ((CardLayout)body.getLayout()).show(body,constraint);
+                        body.repaint();
+                        body.revalidate();
                     }
                 });
             }
@@ -49,7 +52,9 @@ public class DisplayLayout extends JPanel{
 
     private void setDisplayLayout(){
         top = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        aside = new JPanel(new GridLayout(asideButtons.length*4,1));
+//        innerAside = new JPanel(new FlowLayout(FlowLayout.CENTER,15,10));
+        aside = new JPanel();
+        aside.setLayout(new BoxLayout(aside, BoxLayout.Y_AXIS));
         body = new JPanel(new CardLayout());
         bottom = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
@@ -68,8 +73,12 @@ public class DisplayLayout extends JPanel{
 
     }
     private void setAside(){
-        aside.setBackground(new Color(878762));
+
+        aside.setBorder(BorderFactory.createEmptyBorder(15,15,15,15));
+        aside.setBackground(new Color(28,73,100));
         for (JButton boton : asideButtons){
+
+            boton.setMargin(new Insets(5,5,5,5));
             aside.add(boton);
         }
     }
