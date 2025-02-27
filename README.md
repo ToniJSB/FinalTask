@@ -97,4 +97,4 @@ Configura la ruta de acceso a la base de datos en el [fichero de configuración 
 
 ### Licencia
 
-**Este proyecto no tiene licencia dado que es un proecto de final de trimestre en la academia CESUR, cursando Desarrollo de aplicaiones multiplataforma.**
+**Este proyecto no tiene licencia dado que es un proyecto de final de trimestre en la academia CESUR, cursando Desarrollo de aplicaiones multiplataforma.**
