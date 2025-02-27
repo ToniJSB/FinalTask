@@ -1,12 +1,19 @@
 package org.example;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 
 public class Constants {
     public static final int MAX_DATES_X_DAY = 22;
     public static final int WEEK_DAYS = 7;
+    public static final String PDF_PATH = "src/main/resources/pdf/";
+    public static final File PDF_FOLDER = new File(PDF_PATH);
+
     public static final String SIMPLE_DATE_FORMAT = "dd/MM/yyyy";
 
     public static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();

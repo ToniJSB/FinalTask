@@ -21,6 +21,9 @@ import java.time.LocalDate;
 import java.util.EventObject;
 import java.util.List;
 
+/**
+ * The Profile class represents a panel for displaying and managing user profile information.
+ */
 public class Profile extends JPanel {
 
     private final String[] COLUMNAS = {"id","Fecha","Hora","Especialidad","Nombre", "Acciones"};
@@ -37,7 +40,11 @@ public class Profile extends JPanel {
     private JTable tablaCitas;
     private JPanel panelCita;
 
-
+    /**
+     * Constructs a Profile panel with the specified session.
+     *
+     * @param session the Hibernate session
+     */
     public Profile(Session session) {
         super();
         servicePaciente = new ServicePaciente(session);
@@ -49,9 +56,11 @@ public class Profile extends JPanel {
         birthdate = DisplayLayout.pacienteSession.getbDate();
         editableForm = new SignIn(session);
         setDisplay();
-
-
     }
+
+    /**
+     * Sets the display of the Profile panel.
+     */
     private void setDisplay(){
         JPanel container = new JPanel();
         JPanel infoContainer = new JPanel(new GridLayout(2,1));
@@ -72,6 +81,11 @@ public class Profile extends JPanel {
         add(panelCitas);
     }
 
+    /**
+     * Creates a panel for displaying the full name.
+     *
+     * @return the JPanel containing the full name
+     */
     private JPanel createPanelFullName(){
         JPanel panelFullName = new JPanel(new GridLayout(2,1));
         JPanel panelName = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -79,17 +93,18 @@ public class Profile extends JPanel {
 
         JPanel panelSurname = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JLabel labelSurname1 = new JLabel("Apellidos: %s %s".formatted(surname1,surname2));
-//        JLabel labelSurname2 = new JLabel(surname2);
 
         panelName.add(labelName);
         panelSurname.add(labelSurname1);
-//        panelSurname.add(labelSurname2);
         panelFullName.add(panelName);
         panelFullName.add(panelSurname);
 
         return panelFullName;
     }
 
+    /**
+     * Creates the panel for displaying appointments.
+     */
     private void createCitasPanel(){
         panelCitas = new JPanel();
         initTable();
@@ -102,6 +117,10 @@ public class Profile extends JPanel {
         tablaCitas.getColumn("Hora").setMinWidth(50);
         tablaCitas.getColumn("Hora").setMaxWidth(50);
         tablaCitas.getColumn("Hora").setWidth(50);
+        tablaCitas.getColumn("Especialidad").setCellEditor(new NonEditableCell());
+        tablaCitas.getColumn("Nombre").setCellEditor(new NonEditableCell());
+        tablaCitas.getColumn("Hora").setCellEditor(new NonEditableCell());
+        tablaCitas.getColumn("Fecha").setCellEditor(new NonEditableCell());
 
         tablaCitas.getColumn("Acciones").setWidth(200);
         tablaCitas.getColumn("Acciones").setMaxWidth(200);
@@ -113,6 +132,9 @@ public class Profile extends JPanel {
         panelCitas.add(scrollPane);
     }
 
+    /**
+     * Initializes the table for displaying appointments.
+     */
     private void initTable(){
         List<Cita> citas = serviceCita.askCitasByPaciente(DisplayLayout.pacienteSession);
 
@@ -138,7 +160,6 @@ public class Profile extends JPanel {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-//            setText((value == null) ? "" : value.toString());
             JButton cancelarBtn = new JButton();
             JButton reprogramadoBtn = new JButton();
             JPanel btnsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -157,7 +178,6 @@ public class Profile extends JPanel {
                     revalidate();
                     createCitasPanel();
                     add(panelCitas);
-//                    cancelarCita(cita);
                 }
             });
             reprogramadoBtn.setOpaque(true);
@@ -200,7 +220,6 @@ public class Profile extends JPanel {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     fireEditingStopped();
-//
                     cita.setEstado(EstadoCita.CANCELADA);
 
                     serviceCita.updateCita(cita);
@@ -209,7 +228,7 @@ public class Profile extends JPanel {
                     revalidate();
                     createCitasPanel();
                     add(panelCitas);
-//                    cancelarCita(cita);
+
                 }
             });
             reprogramadoBtn.setOpaque(false);

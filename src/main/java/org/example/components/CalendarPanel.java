@@ -1,25 +1,37 @@
 package org.example.components;
 
-import org.example.Constants;
-import org.example.Utils;
-import org.example.models.Cita;
-import org.example.models.Medico;
-import org.example.service.ServiceCita;
-import org.example.service.ServiceMedico;
-import org.hibernate.Session;
-
-import javax.swing.*;
-import javax.swing.border.BevelBorder;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.TextStyle;
-import java.util.Date;
 import java.util.Locale;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.BevelBorder;
+
+import org.example.Constants;
+import org.example.Utils;
+import org.example.models.Cita;
+import org.example.service.ServiceCita;
+import org.example.service.ServiceMedico;
+import org.hibernate.Session;
+
+/**
+ * Custom JPanel component for displaying a calendar.
+ */
 public class CalendarPanel extends JPanel {
     private JComboBox<String> comboMonth;
 
@@ -38,6 +50,15 @@ public class CalendarPanel extends JPanel {
     private DisplayLayout appDisplay;
     private Cita cita;
 
+    /**
+     * Constructor for CalendarPanel.
+     * 
+     * @param parent the parent panel.
+     * @param dailyPlan the daily plan component.
+     * @param session the Hibernate session.
+     * @param medicoField the text field for the doctor's information.
+     * @param displayLayout the display layout.
+     */
     public CalendarPanel(JPanel parent, DailyPlan dailyPlan, Session session, JTextField medicoField, DisplayLayout displayLayout) {
         super();
         this.medicoField = medicoField;
@@ -51,6 +72,14 @@ public class CalendarPanel extends JPanel {
         setDisplayDaily();
     }
 
+    /**
+     * Constructor for CalendarPanel.
+     * 
+     * @param parent the parent panel.
+     * @param dailyPlan the daily plan component.
+     * @param session the Hibernate session.
+     * @param cita the appointment information.
+     */
     public CalendarPanel(JPanel parent,DailyPlan dailyPlan, Session session, Cita cita) {
         super();
         this.cita = cita;
@@ -62,6 +91,11 @@ public class CalendarPanel extends JPanel {
         setDisplayDaily();
     }
 
+    /**
+     * Constructor for CalendarPanel.
+     * 
+     * @param birtdayDateField the text field for the birthday date.
+     */
     public CalendarPanel(JTextField birtdayDateField) {
         super();
         window = new JFrame("Birtday Date");
@@ -73,6 +107,12 @@ public class CalendarPanel extends JPanel {
         window.add(calendarContainer);
         setVisible(true);
     }
+
+    /**
+     * Sets the visibility of the calendar window.
+     * 
+     * @param isVisible true to make the window visible, false to hide it.
+     */
     public void setVisible(boolean isVisible){
         window.setVisible(isVisible);
     }
@@ -99,6 +139,9 @@ public class CalendarPanel extends JPanel {
 
     }
 
+    /**
+     * Sets the display of the calendar. used to select a birthday date or update the appointment date.
+     */
     private void setDisplay(){
         fechaActual = LocalDate.now();
 
@@ -123,6 +166,9 @@ public class CalendarPanel extends JPanel {
         actualizarCalendario();
     }
 
+    /**
+     * Sets the display of the calendar. used to select a date for a appointment using .
+     */
     private void setDisplayDaily(){
         fechaActual = LocalDate.now();
 
@@ -141,12 +187,15 @@ public class CalendarPanel extends JPanel {
 
         // Panel del calendario
         panelCalendario.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        panelCalendario.setBackground(Constants.Colors.ASIDE_BACKGROUND);
+        panelCalendario.setBackground(Constants.Colors.ASIDE_BACKGROUND.brighter().brighter());
         calendarContainer.add(panelCalendario, BorderLayout.CENTER);
         add(calendarContainer);
         actualizarCalendario();
     }
 
+    /**
+     * Updates the calendar display based on the selected month and year.
+     */
     public void actualizarCalendario() {
         panelCalendario.removeAll();
 
@@ -171,7 +220,6 @@ public class CalendarPanel extends JPanel {
 
         for (int i = 0; i < diasMesAnterior; i++) {
             JButton boton = new JButton(String.valueOf(fechaMesAnterior.getDayOfMonth()));
-//            boton.setForeground(Color.DARK_GRAY); // Días del mes anterior en gris
             boton.setEnabled(false); // Deshabilitar botones de días no pertenecientes al mes actual
             panelCalendario.add(boton);
             fechaMesAnterior = fechaMesAnterior.plusDays(1);
@@ -183,7 +231,6 @@ public class CalendarPanel extends JPanel {
             JButton boton = new JButton(String.valueOf(fechaActual.getDayOfMonth()));
             boton.setMargin(new Insets(5,5,5,5));
             if (fechaActual.equals(LocalDate.now().plusDays(1))) {
-                // TODO Poner color distinto al Backround del dia de hoy
                 boton.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
             }
             LocalDate finalFechaActual = fechaActual;
@@ -197,7 +244,6 @@ public class CalendarPanel extends JPanel {
                 boton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-//                        boton.setBackground(Color.GREEN);
                         showReprogramaDailyPlan(finalFechaActual);
                     }
                 });
@@ -242,22 +288,33 @@ public class CalendarPanel extends JPanel {
         setVisible(false);
         window.dispose();
     }
+
+    /**
+     * Shows the daily plan for a specific date to update the appointment selected prevoiusly.
+     * 
+     * @param fecha the date for which the daily plan is to be displayed.
+     */
     private void showReprogramaDailyPlan(LocalDate fecha) {
         parent.remove(dailyPlan);
         dailyPlan = new DailyPlan(fecha, serviceCita,cita);
-//        dailyPlan.setMedicoOfDay(serviceMedico.getMedicoById(Integer.parseInt(medicoField.getText())));
         parent.add(dailyPlan);
 
         revalidate();
         repaint();
     }
+
+    /**
+     * Shows the daily plan for a specific date to create an appointment.
+     * 
+     * @param fecha the date for which the daily plan is to be displayed.
+     */
     private void showDailyPlan(LocalDate fecha) {
         parent.remove(dailyPlan);
         dailyPlan = new DailyPlan(fecha, serviceCita,serviceMedico.getMedicoById(Integer.parseInt(medicoField.getText())),appDisplay);
-//        dailyPlan.setMedicoOfDay(serviceMedico.getMedicoById(Integer.parseInt(medicoField.getText())));
         parent.add(dailyPlan);
 
         revalidate();
         repaint();
     }
+
 }

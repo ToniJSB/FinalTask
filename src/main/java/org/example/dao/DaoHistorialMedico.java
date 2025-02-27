@@ -22,4 +22,12 @@ public class DaoHistorialMedico {
         return dbSession.createQuery(criteriaQuery).getResultList();
 
     }
+    public HistorialMedico getHistorialMedicoById(int id){
+        CriteriaBuilder criteriaBuilder = dbSession.getCriteriaBuilder();
+        CriteriaQuery<HistorialMedico> criteriaQuery = criteriaBuilder.createQuery(HistorialMedico.class);
+        Root<HistorialMedico> citasPaciente = criteriaQuery.from(HistorialMedico.class);
+        criteriaQuery.select(citasPaciente).where(criteriaBuilder.equal(citasPaciente.get("idHistorial"), id));
+        return dbSession.createQuery(criteriaQuery).getSingleResultOrNull();
+
+    }
 }

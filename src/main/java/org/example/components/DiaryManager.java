@@ -4,28 +4,20 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The DiaryManager class manages the diary and generates available time slots.
+ */
 public class DiaryManager {
     private static final LocalTime START_TIME = LocalTime.of(9, 0);
     private static final LocalTime END_TIME = LocalTime.of(18, 0);
     private static final Duration APPOINTMENT_DURATION = Duration.ofMinutes(30);
 
 
-    // Clase interna para representar intervalos de tiempo
-    private static class TimeInterval {
-        LocalTime start;
-        LocalTime end;
-
-        TimeInterval(LocalTime start) {
-            this.start = start;
-            this.end = start.plus(APPOINTMENT_DURATION);
-        }
-
-        boolean overlaps(TimeInterval other) {
-            return !this.end.isBefore(other.start) && !this.start.isAfter(other.end);
-        }
-    }
-
-    // Generar todos los slots disponibles del día
+    /**
+     * Generates all available time slots for the day.
+     *
+     * @return the list of available time slots
+     */
     public List<LocalTime> generateAllTimeSlots() {
         List<LocalTime> slots = new ArrayList<>();
         LocalTime current = START_TIME;

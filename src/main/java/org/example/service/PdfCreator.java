@@ -1,95 +1,122 @@
 package org.example.service;
+import java.io.FileOutputStream;
 import java.util.List;
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfWriter;
-import org.example.Utils;
-import org.example.components.DisplayLayout;
+
+import org.example.Constants;
 import org.example.models.HistorialMedico;
 import org.example.models.Paciente;
 
-import java.io.FileOutputStream;
-import java.util.ArrayList;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
+/**
+ * Utility class for creating PDF documents.
+ */
 public class PdfCreator {
-    public static void main(String[] args) {
 
-
-
+    /**
+     * Generates a unique file name for a PDF document.
+     * 
+     * @param name the base name for the file.
+     * @return a unique file name.
+     */
+    public static String getUniqueFileName(String name) {
+        String[] files = Constants.PDF_FOLDER.list();
+        if (files == null) {
+            return name + ".pdf";
+        }
+        int i = 1;
+        String newName = name + ".pdf";
+        while (true) {
+            boolean found = false;
+            for (String file : files) {
+                if (file.equals(newName)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                return newName;
+            }
+            newName = name + " (" + i + ").pdf";
+            i++;
+        }
     }
 
-    public void genPDF(List<HistorialMedico> historialCompletoMedico){
-        // Generar el PDF
-        Paciente paciente = DisplayLayout.pacienteSession;
+    /**
+     * Creates a PDF document for a patient with a list of medical history records.
+     * 
+     * @param paciente the patient for whom the PDF is to be created.
+     * @param historialMedico the list of medical history records.
+     */
+    public static void create(Paciente paciente, List<HistorialMedico> historialMedico) {
         try {
-            Document document= new Document();
-            PdfWriter.getInstance(document, new FileOutputStream("HistorialMedico.pdf"));
+            Document document = new Document();
+
+
+            String fileName = getUniqueFileName(paciente.getNombre());
+            System.out.println(fileName);
+            String filePath = Constants.PDF_FOLDER+"/" + fileName;
+            System.out.println(filePath);
+            PdfWriter.getInstance(document, new FileOutputStream(filePath));
             document.open();
-
-            // Título del documento
-            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18, BaseColor.BLUE);
-            Paragraph title = new Paragraph("Historial Médico de Pacientes", titleFont);
-            title.setAlignment(Element.ALIGN_CENTER);
-            document.add(title);
-
-            // Espacio en blanco
-            document.add(new Paragraph(" "));
-
-            // Tabla de pacientes
-            PdfPTable tablaPacientes = new PdfPTable(4);
-            tablaPacientes.setWidthPercentage(100);
-            tablaPacientes.setSpacingBefore(10f);
-            tablaPacientes.setSpacingAfter(10f);
-
-            // Encabezados de la tabla de pacientes
-            addTableHeader(tablaPacientes, "ID", "Nombre", "Apellidos", "Fecha de Nacimiento");
-
-            // Llenar la tabla de pacientes
-            tablaPacientes.addCell(String.valueOf(paciente.getDni()));
-            tablaPacientes.addCell(paciente.getFullName());
-            tablaPacientes.addCell(Utils.DateFormat.dateAsStringDateF(Utils.DateFormat.asDate(paciente.getbDate())));
-
-            document.add(tablaPacientes);
-
-            // Espacio en blanco
-            document.add(new Paragraph(" "));
-
-            // Tabla de historiales médicos
-            PdfPTable tablaHistoriales = new PdfPTable(4);
-            tablaHistoriales.setWidthPercentage(100);
-            tablaHistoriales.setSpacingBefore(10f);
-            tablaHistoriales.setSpacingAfter(10f);
-
-            // Encabezados de la tabla de historiales
-            addTableHeader(tablaHistoriales, "ID Paciente", "Fecha de Visita", "Diagnóstico", "Tratamiento");
-
-            // Llenar la tabla de historiales
-            for (HistorialMedico historial : historialCompletoMedico) {
-                tablaHistoriales.addCell(String.valueOf(historial.getDiagnostico()));
-                tablaHistoriales.addCell(Utils.DateFormat.dateAsStringDateF(historial.getFechaVisita()));
-                tablaHistoriales.addCell(historial.getDiagnostico());
-                tablaHistoriales.addCell(historial.getTratamiento());
+            document.add(new Paragraph("Paciente"));
+            document.add(new Paragraph("Nombre: " + paciente.getNombre()));
+            document.add(new Paragraph("Edad: " + paciente.getEdad()));
+            document.add(new Paragraph("Historial Médico"));
+            PdfPTable table = new PdfPTable(3);
+            table.addCell(new PdfPCell(new Paragraph("Fecha")));
+            table.addCell(new PdfPCell(new Paragraph("Diagnóstico")));
+            table.addCell(new PdfPCell(new Paragraph("Tratamiento")));
+            for (HistorialMedico historial : historialMedico) {
+                table.addCell(new PdfPCell(new Paragraph(historial.getFechaVisita().toString())));
+                table.addCell(new PdfPCell(new Paragraph(historial.getDiagnostico())));
+                table.addCell(new PdfPCell(new Paragraph(historial.getTratamiento())));
             }
-
-            document.add(tablaHistoriales);
-
-            // Cerrar el documento
+            document.add(table);
             document.close();
-
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    private static void addTableHeader(PdfPTable table, String... headers) {
-        for (String header : headers) {
-            PdfPCell cell = new PdfPCell();
-            cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-            cell.setBorderWidth(2);
-            cell.setPhrase(new Phrase(header));
-            table.addCell(cell);
+
+    /**
+     * Creates a PDF document for a patient with a single medical history record.
+     * 
+     * @param paciente the patient for whom the PDF is to be created.
+     * @param historialMedico the medical history record.
+     */
+    public static void create(Paciente paciente, HistorialMedico historialMedico) {
+        try {
+            Document document = new Document();
+
+
+            String fileName = getUniqueFileName(paciente.getNombre() + "_" + historialMedico.getFechaVisita().toString());
+            System.out.println(fileName);
+            String filePath = Constants.PDF_FOLDER+"/" + fileName;
+            System.out.println(filePath);
+            PdfWriter.getInstance(document, new FileOutputStream(filePath));
+            document.open();
+            document.add(new Paragraph("Paciente"));
+            document.add(new Paragraph("Nombre: " + paciente.getNombre()));
+            document.add(new Paragraph("Edad: " + paciente.getEdad()));
+            document.add(new Paragraph("Historial Médico"));
+            PdfPTable table = new PdfPTable(3);
+            table.addCell(new PdfPCell(new Paragraph("Fecha")));
+            table.addCell(new PdfPCell(new Paragraph("Diagnóstico")));
+            table.addCell(new PdfPCell(new Paragraph("Tratamiento")));
+            table.addCell(new PdfPCell(new Paragraph(historialMedico.getFechaVisita().toString())));
+            table.addCell(new PdfPCell(new Paragraph(historialMedico.getDiagnostico())));
+            table.addCell(new PdfPCell(new Paragraph(historialMedico.getTratamiento())));
+            document.add(table);
+            document.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
-
 }

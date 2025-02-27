@@ -16,6 +16,9 @@ import java.awt.event.*;
 import java.time.LocalDate;
 import java.util.Date;
 
+/**
+ * The Calendar class represents a calendar component that displays daily plans and allows for reprogramming appointments.
+ */
 public class Calendar extends JPanel {
     private LocalDate fechaActual;
     private CalendarPanel panelCalendarioQ;
@@ -29,6 +32,12 @@ public class Calendar extends JPanel {
     private Cita cita;
     private JFrame window;
 
+    /**
+     * Constructs a Calendar object with the specified session and display layout.
+     *
+     * @param session the Hibernate session
+     * @param fullDisplay the display layout
+     */
     public Calendar(Session session, DisplayLayout fullDisplay) {
         serviceCita = new ServiceCita(session);
         serviceMedico = new ServiceMedico(session);
@@ -37,6 +46,14 @@ public class Calendar extends JPanel {
         instanceComponents();
         createDisplay();
     }
+
+    /**
+     * Constructs a Calendar object with the specified session and appointment.
+     * This constructor is used for reprogramming an appointment.
+     *
+     * @param session the Hibernate session
+     * @param cita the appointment to be reprogrammed
+     */
     public Calendar(Session session, Cita cita) {
         serviceCita = new ServiceCita(session);
         serviceMedico = new ServiceMedico(session);
@@ -57,10 +74,18 @@ public class Calendar extends JPanel {
 
     }
 
+    /**
+     * Returns the parent display layout.
+     *
+     * @return the parent display layout
+     */
     public DisplayLayout getParentDisplay() {
         return parentDisplay;
     }
 
+    /**
+     * Initializes the components for reprogramming an appointment.
+     */
     private void instanceReprogramarCita(){
         fullContainer = new JPanel(new GridLayout(1,2));
         dailyPlan = new DailyPlan(fechaActual, serviceCita, cita);
@@ -69,6 +94,9 @@ public class Calendar extends JPanel {
         panelCalendarioQ = new CalendarPanel(fullContainer,dailyPlan, serviceCita.getSession(),cita);
     }
 
+    /**
+     * Initializes the components for the calendar.
+     */
     private void instanceComponents(){
         fullContainer = new JPanel(new GridLayout(1,2));
         medicoField = new JTextField();
@@ -96,6 +124,9 @@ public class Calendar extends JPanel {
 
     }
 
+    /**
+     * Creates the display layout for reprogramming an appointment.
+     */
     private void createReprogramarDisplay(){
 //        setLayout(new CardLayout());
         JPanel calendarMedicoContainer = new JPanel(new BorderLayout());
@@ -110,6 +141,9 @@ public class Calendar extends JPanel {
         panelCalendarioQ.actualizarCalendario();
     }
 
+    /**
+     * Creates the display layout for the calendar.
+     */
     private void createDisplay(){
         setLayout(new CardLayout());
         JPanel contenedor = this;

@@ -151,4 +151,9 @@ public class Paciente {
         return "%s %s %s".formatted(nombre,apellido1,apellido2);
     }
 
+    public int getEdad() {
+        return LocalDate.now().getYear()-bDate.getYear();
+
+
+    }
 }

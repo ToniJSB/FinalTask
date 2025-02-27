@@ -1,9 +1,8 @@
 package org.example;
 
-import com.formdev.flatlaf.FlatLightLaf;
+import javax.swing.UIManager;
 
-import javax.swing.*;
-import java.awt.*;
+import com.formdev.flatlaf.FlatLightLaf;
 
 public class OwnTheme extends FlatLightLaf {
     public OwnTheme() {
@@ -11,6 +10,8 @@ public class OwnTheme extends FlatLightLaf {
         UIManager.put("Panel.background", Constants.Colors.PANEL_BACKGROUND);
         UIManager.put("Button.hoverBackground", Constants.Colors.HOVER_BUTTON);
         UIManager.put("Table.alternateRowColor", Constants.Colors.ALTERNATE_TABLE);
+        UIManager.put("Separator.Background", Constants.Colors.BORDER_DIVIDER);
+        UIManager.put("Separator.stripeWidth", 20);
 
     }
 

@@ -1,21 +1,33 @@
 package org.example.components;
 
-import org.example.Utils;
-import org.example.models.Paciente;
-import org.example.service.ServicePaciente;
-import org.hibernate.Session;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.CardLayout;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.Dictionary;
+
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
+import org.example.Utils;
+import org.example.models.Paciente;
+import org.example.service.ServicePaciente;
+import org.hibernate.Session;
+
+/**
+ * The SignIn class represents a panel for user sign-in and registration.
+ */
 public class SignIn extends JPanel {
     private JPanel container;
     private JTextField txtId;
@@ -40,6 +52,13 @@ public class SignIn extends JPanel {
 
     private Paciente userSession;
 
+    /**
+     * Constructs a SignIn panel with the specified main panel, layout, and session.
+     *
+     * @param mainPanel the main panel
+     * @param initLayout the initial layout
+     * @param session the Hibernate session
+     */
     public SignIn(JPanel mainPanel, CardLayout initLayout, Session session) {
         servicePaciente = new ServicePaciente(session);
         this.mainPanel = mainPanel;
@@ -48,6 +67,12 @@ public class SignIn extends JPanel {
         setupLayout();
         setupDocumentFilters();
     }
+
+    /**
+     * Constructs a SignIn panel with the specified session.
+     *
+     * @param session the Hibernate session
+     */
     public SignIn(Session session) {
         servicePaciente = new ServicePaciente(session);
         userSession = DisplayLayout.pacienteSession;
@@ -56,6 +81,9 @@ public class SignIn extends JPanel {
         setupDocumentFilters();
     }
 
+    /**
+     * Initializes the components of the SignIn panel.
+     */
     private void initComponents() {
         container = new JPanel();
         txtId = new JTextField(10);
@@ -95,6 +123,9 @@ public class SignIn extends JPanel {
 
     }
 
+    /**
+     * Sets up the layout of the SignIn panel.
+     */
     private void setupLayout() {
         container.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -128,6 +159,14 @@ public class SignIn extends JPanel {
         add(container);
     }
 
+    /**
+     * Adds a field to the specified GridBagConstraints.
+     *
+     * @param gbc the GridBagConstraints
+     * @param row the row index
+     * @param label the label text
+     * @param field the field component
+     */
     private void addField(GridBagConstraints gbc, int row, String label, JComponent field) {
         gbc.gridx = 0;
         gbc.gridy = row;
@@ -158,6 +197,9 @@ public class SignIn extends JPanel {
 
     }
 
+    /**
+     * Sets up document filters for input validation.
+     */
     private void setupDocumentFilters() {
         // Filtro para DNI (max 9 caracteres)
         ((AbstractDocument) txtDni.getDocument()).setDocumentFilter(new LengthDocumentFilter(9));
@@ -168,8 +210,11 @@ public class SignIn extends JPanel {
         ((AbstractDocument) txtBirdthDayDate.getDocument()).setDocumentFilter(new DateDocumentFilter());
     }
 
-
-
+    /**
+     * Handles the action for the "Guardar" button.
+     *
+     * @param e the ActionEvent
+     */
     private void guardarAction(ActionEvent e) {
         if (validarCampos()) {
             String[] bDateSplit = txtBirdthDayDate.getText().split("/");
@@ -222,11 +267,21 @@ public class SignIn extends JPanel {
         // Aquí iría la lógica para guardar en la base de datos
     }
 
+    /**
+     * Handles the action for the "Cancelar" button.
+     *
+     * @param e the ActionEvent
+     */
     private void cancelarAction(ActionEvent e) {
         limpiarCampos();
         initLayout.show(mainPanel,"LOGIN");
     }
 
+    /**
+     * Validates the input fields.
+     *
+     * @return true if the fields are valid, false otherwise
+     */
     private boolean validarCampos() {
         boolean result = true;
         String mensaje = "";
@@ -279,6 +334,9 @@ public class SignIn extends JPanel {
         return result;
     }
 
+    /**
+     * Clears the input fields.
+     */
     public void limpiarCampos() {
         txtId.setText("");
         txtNombre.setText("");
@@ -292,6 +350,11 @@ public class SignIn extends JPanel {
         txtBirdthDayDate.setText("");
     }
 
+    /**
+     * Sets the Paciente data in the input fields.
+     *
+     * @param paciente the Paciente object
+     */
     public void setPaciente(Paciente paciente) {
         txtId.setText(String.valueOf(paciente.getIdPaciente()));
         txtNombre.setText(paciente.getNombre());
@@ -304,11 +367,13 @@ public class SignIn extends JPanel {
         txtTelefono.setText(String.valueOf(paciente.getTelefono()));
     }
 
+    /**
+     * Gets the Paciente data from the input fields.
+     *
+     * @return the Paciente object
+     */
     public Paciente getPaciente() {
         Paciente paciente = new Paciente();
-//        if (!txtId.getText().isBlank()) {
-//            paciente.setIdPaciente(Integer.parseInt(txtId.getText()));
-//        }
         paciente.setNombre(txtNombre.getText());
         paciente.setApellido1(txtApellido1.getText());
         paciente.setApellido2(txtApellido2.getText());
@@ -326,7 +391,9 @@ public class SignIn extends JPanel {
         return paciente;
     }
 
-    // Clases para filtros de documentos
+    /**
+     * DocumentFilter to limit the length of a document.
+     */
     private static class LengthDocumentFilter extends DocumentFilter {
         private final int maxLength;
 
@@ -345,7 +412,9 @@ public class SignIn extends JPanel {
             }
         }
     }
-
+    /**
+     * DocumentFilter to allow only numeric characters.
+     */
     private static class NumericDocumentFilter extends DocumentFilter {
         @Override
         public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
@@ -363,7 +432,9 @@ public class SignIn extends JPanel {
             }
         }
     }
-
+    /**
+     * DocumentFilter to allow only valid date characters.
+     */
     private static class DateDocumentFilter extends DocumentFilter {
         @Override
         public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)

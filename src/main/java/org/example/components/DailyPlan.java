@@ -18,6 +18,9 @@ import java.util.Date;
 import java.util.List;
 import java.awt.*;
 
+/**
+ * The DailyPlan class represents a panel for displaying the daily plan of appointments.
+ */
 public class DailyPlan extends JPanel {
     private LocalDate dayDate;
     private DisplayLayout fullAppDisplay;
@@ -28,6 +31,14 @@ public class DailyPlan extends JPanel {
     private Cita cita;
     private JPanel container;
 
+    /**
+     * Constructs a DailyPlan panel with the specified day, service, doctor, and display layout.
+     *
+     * @param day the day date
+     * @param serviceCita the service for managing appointments
+     * @param medico the doctor
+     * @param appDisplay the display layout
+     */
     public DailyPlan(LocalDate day,ServiceCita serviceCita, Medico medico, DisplayLayout appDisplay) {
         setLayout(new BorderLayout());// Usar BorderLayout para expandir el scroll
         this.dayDate = day;
@@ -37,6 +48,14 @@ public class DailyPlan extends JPanel {
         citasByDayDate = serviceCita.askCitasByDayWithMedicoAllowed(Utils.DateFormat.asDate(dayDate), medicoOfDay);
         setDisplay();
     }
+
+    /**
+     * Constructs a DailyPlan panel with the specified day, service, and appointment.
+     *
+     * @param day the day date
+     * @param serviceCita the service for managing appointments
+     * @param cita the appointment
+     */
     public DailyPlan(LocalDate day,ServiceCita serviceCita, Cita cita) {
         setLayout(new BorderLayout());// Usar BorderLayout para expandir el scroll
         this.dayDate = day;
@@ -47,6 +66,11 @@ public class DailyPlan extends JPanel {
         setDisplay();
     }
 
+    /**
+     * Sets the doctor of the day.
+     *
+     * @param medicoOfDay the doctor of the day
+     */
     public void setMedicoOfDay(Medico medicoOfDay) {
         this.medicoOfDay = medicoOfDay;
         citasByDayDate = serviceCita.askCitasByDayWithMedicoAllowed(Utils.DateFormat.asDate(dayDate), medicoOfDay);
@@ -54,6 +78,9 @@ public class DailyPlan extends JPanel {
         repaint();
     }
 
+    /**
+     * Sets the display of the DailyPlan panel.
+     */
     private void setDisplay() {
         // Panel que contendrá el título y el scroll
         container = new JPanel(new BorderLayout());
@@ -113,6 +140,13 @@ public class DailyPlan extends JPanel {
         add(container, BorderLayout.CENTER);
     }
 
+    /**
+     * Sets the action for the appointment button.
+     *
+     * @param date the appointment date
+     * @param time the appointment time
+     * @return the ActionListener for the button
+     */
     private ActionListener setActionBtnCita(Date date, LocalTime time){
         return new ActionListener() {
             @Override
@@ -158,6 +192,4 @@ public class DailyPlan extends JPanel {
         };
     }
 
-//    private ActionListener setCita(){
-//    }
 }

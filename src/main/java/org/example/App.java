@@ -8,6 +8,7 @@ import org.example.components.*;
 import org.example.dao.AccessDB;
 import org.example.models.Medico;
 import org.example.models.Paciente;
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -19,10 +20,26 @@ import java.util.*;
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * Main application class for the Hospital Tramuntana system.
+ */
 public class App {
     private AccessDB accessDB;
     private Session dbSession;
 
+    /**
+     * Constructor for the App class. 
+     * Init a main frame and set the look and feel. 
+     * Open a session to the database.
+     * Finally, add the main panel to the frame.
+     * 
+     * In case the frame is closed, the database session is closed.
+     * 
+     * @throws UnsupportedLookAndFeelException if the look and feel is not supported.
+     * @throws ClassNotFoundException if the class is not found.
+     * @throws InstantiationException if the class cannot be instantiated.
+     * @throws IllegalAccessException if the class or its nullary constructor is not accessible.
+     */
     public App() throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 
         JFrame frame = new JFrame("Acceso: Hospital tramuntana");
@@ -38,51 +55,25 @@ public class App {
         frame.add(initRouting(dbSession));
         frame.setVisible(true);
 
-        frame.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-            closeSession();
-            }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-
-            }
-        });
+        frame.addWindowListener(customWindowListener());
 
     }
+
     private void closeSession(){
         dbSession.close();
     }
+    
     private void openSession(){
         dbSession = accessDB.getSessionFactory();
     }
 
+    /**
+     * Initializes the routing of the application. with the components for the login and sign in.
+     * 
+     * @param session
+     * @return
+     * 
+     */
     private JPanel initRouting(Session session){
         CardLayout cardLayout = new CardLayout();
         JPanel mainPanel = new JPanel(cardLayout);
@@ -102,6 +93,9 @@ public class App {
         return mainPanel;
     }
 
+    /**
+     * Method to create doctors and save them to the database.
+     */
     private void createMedicos(){
         List<Map<String,String>> futureNewDocs = new ArrayList<Map<String,String>>();
 
@@ -145,7 +139,7 @@ public class App {
             count++;
         }
         for (Map<String,String> itm: futureNewDocs){
-            if (getMedicosByNombreApellidos(itm.get("nombre"), itm.get("apellidos")) == null){
+            if (getMedicoByNombreApellidos(itm.get("nombre"), itm.get("apellidos")) == null){
                 Medico medico = new Medico(
                         itm.get("nombre"),
                         itm.get("apellidos"),
@@ -161,7 +155,14 @@ public class App {
 
     }
 
-    public Medico getMedicosByNombreApellidos(String nombre,String apellidos){
+    /**
+     * Retrieves a doctor by their first and last name.
+     * 
+     * @param nombre the first name of the doctor.
+     * @param apellidos the last name of the doctor.
+     * @return the Medico object, or null if not found.
+     */
+    private Medico getMedicoByNombreApellidos(String nombre,String apellidos){
         CriteriaBuilder criteriaBuilder = dbSession.getCriteriaBuilder();
         CriteriaQuery<Medico> criteriaQuery = criteriaBuilder.createQuery(Medico.class);
         Root<Medico> citasPaciente = criteriaQuery.from(Medico.class);
@@ -170,12 +171,18 @@ public class App {
 
     }
 
-    public void saveMedico(Medico medico){
+    /**
+     * Saves a doctor to the database. This method should b at Dao, but it is here for simplicity.
+     * 
+     * @param medico the Medico object to be saved.
+     */
+    private void saveMedico(Medico medico){
         Transaction transaction = dbSession.getTransaction();
         transaction.begin();
         dbSession.persist(medico);
         transaction.commit();
     }
+
     private boolean esPrimo(int n) {
         for(int i=2;i<n;i++) {
             if(n%i==0)
@@ -184,7 +191,13 @@ public class App {
         return true;
     }
 
-    public static void cambiarFuenteComponentes(Container contenedor, Font fuente) {
+    /**
+     * Changes the font of all components within a container.
+     * 
+     * @param contenedor the container whose components' fonts are to be changed.
+     * @param fuente the new font to be applied.
+     */
+    private static void cambiarFuenteComponentes(Container contenedor, Font fuente) {
         for (Component componente : contenedor.getComponents()) {
             componente.setFont(fuente);
             if (componente instanceof Container) {
@@ -192,5 +205,49 @@ public class App {
             }
         }
     }
+
+    /**
+     * Method to set a custom listener when the window is closed.
+     * 
+     */
+    private WindowListener customWindowListener(){
+        return new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                closeSession();
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+
+            }
+        };
+    }
+
 
 }

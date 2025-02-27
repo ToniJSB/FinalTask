@@ -1,11 +1,12 @@
 package org.example.dao;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
 import org.example.models.Paciente;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 
 public class DaoPaciente {
     private Session dbSession;
@@ -17,7 +18,7 @@ public class DaoPaciente {
         return false;
     }
 
-    public Paciente getPacienteByEmailOrDNI(String email){
+    public Paciente askPacienteByEmailOrDNI(String email){
         CriteriaBuilder criteriaBuilder = dbSession.getCriteriaBuilder();
         CriteriaQuery<Paciente> criteriaQuery = criteriaBuilder.createQuery(Paciente.class);
         Root<Paciente> paciente = criteriaQuery.from(Paciente.class);

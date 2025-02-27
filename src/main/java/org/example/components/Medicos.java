@@ -21,6 +21,9 @@ import java.util.EventObject;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * The Medicos class represents a panel for displaying and managing doctors.
+ */
 public class Medicos extends JPanel {
     private JPanel superContainer;
     private JPanel container;
@@ -34,6 +37,12 @@ public class Medicos extends JPanel {
 
     private final String[] COLUMNAS = {"id","Especialización", "Nombre", "Apellidos", "Acciones"};
 
+    /**
+     * Constructs a Medicos panel with the specified session and name field.
+     *
+     * @param session the Hibernate session
+     * @param nameMedicoField the text field for the doctor's name
+     */
     public Medicos(Session session, JTextField nameMedicoField) {
         super();
         serviceMedico = new ServiceMedico(session);
@@ -41,6 +50,9 @@ public class Medicos extends JPanel {
         setDisplay();
     }
 
+    /**
+     * Sets the display of the Medicos panel. and adds listeners to the name, apellidos, and especialidad fields.
+     */
     private void setDisplay() {
         superContainer = new JPanel();
         medicosList = serviceMedico.getAllMedicos();
@@ -53,44 +65,20 @@ public class Medicos extends JPanel {
         name.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                medicosList = serviceMedico.getMedicosByEspecialidadPlusName(Utils.capitalizeFirtsLetter(especialidad.getText()),Utils.capitalizeFirtsLetter(name.getText()),Utils.capitalizeFirtsLetter(apellidos.getText()));
-
-                superContainer.removeAll();
-//                superContainer = new JPanel();
-                container = new JPanel();
-                tabla = new JTable();
-                repaint();
-                revalidate();
-                setupLayout();
+                updateLayout();
                 name.requestFocus();
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                medicosList = serviceMedico.getMedicosByEspecialidadPlusName(Utils.capitalizeFirtsLetter(especialidad.getText()),Utils.capitalizeFirtsLetter(name.getText()),Utils.capitalizeFirtsLetter(apellidos.getText()));
-
-                superContainer.removeAll();
-//                superContainer = new JPanel();
-                container = new JPanel();
-                tabla = new JTable();
-                repaint();
-                revalidate();
-                setupLayout();
+                updateLayout();
                 name.requestFocus();
 
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                medicosList = serviceMedico.getMedicosByEspecialidadPlusName(Utils.capitalizeFirtsLetter(especialidad.getText()),Utils.capitalizeFirtsLetter(name.getText()),Utils.capitalizeFirtsLetter(apellidos.getText()));
-
-                superContainer.removeAll();
-//                superContainer = new JPanel();
-                container = new JPanel();
-                tabla = new JTable();
-                repaint();
-                revalidate();
-                setupLayout();
+                updateLayout();
                 name.requestFocus();
 
             }
@@ -140,8 +128,9 @@ public class Medicos extends JPanel {
 
     }
 
-
-
+    /**
+     * Sets up the layout of the Medicos panel.
+     */
     private void setupLayout() {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -176,6 +165,11 @@ public class Medicos extends JPanel {
 
     }
 
+    /**
+     * Initializes the table for displaying doctors.
+     *
+     * @return the JTable containing the doctors
+     */
     private JTable initTable(){
         DefaultTableModel model = new DefaultTableModel(COLUMNAS, 0);
         for (Medico medico: medicosList) {
@@ -189,6 +183,15 @@ public class Medicos extends JPanel {
         return new JTable(model);
     }
 
+    /**
+     * Adds a field to the specified GridBagConstraints.
+     *
+     * @param gbc the GridBagConstraints
+     * @param row the row index
+     * @param label the label text
+     * @param field the field component
+     * @param container the container panel
+     */
     private void addField(GridBagConstraints gbc, int row, String label, JComponent field, JPanel container) {
         gbc.gridx = 0;
         gbc.gridy = row;
@@ -201,11 +204,12 @@ public class Medicos extends JPanel {
 
     }
 
+    /**
+     * Updates the layout of the Medicos panel.
+     */
     private void updateLayout(){
         medicosList = serviceMedico.getMedicosByEspecialidadPlusName(Utils.capitalizeFirtsLetter(especialidad.getText()),Utils.capitalizeFirtsLetter(name.getText()),Utils.capitalizeFirtsLetter(apellidos.getText()));
-
         superContainer.removeAll();
-//                superContainer = new JPanel();
         container = new JPanel();
         tabla = new JTable();
         repaint();
@@ -213,7 +217,9 @@ public class Medicos extends JPanel {
         setupLayout();
     }
 
-    // Renderizador personalizado para botones
+    /**
+     * The ButtonRenderer class represents a button renderer. used to create a button in a cell.
+     */
     static class ButtonRenderer extends JButton implements TableCellRenderer {
         public ButtonRenderer() {
             setOpaque(true);
@@ -226,7 +232,9 @@ public class Medicos extends JPanel {
         }
     }
 
-    // Editor personalizado para botones
+    /**
+     * The ButtonEditor class represents a button editor. used to create a button with action in a cell.
+     */
     class ButtonEditor extends DefaultCellEditor {
         private JButton button;
         private String label;
@@ -278,7 +286,9 @@ public class Medicos extends JPanel {
         }
     }
 
-
+    /**
+     * The NonEditableCell class represents a non-editable cell.
+     */
     static class NonEditableCell implements TableCellEditor {
 
         @Override

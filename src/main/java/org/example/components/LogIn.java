@@ -11,6 +11,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * The LogIn class represents a panel for user login.
+ */
 public class LogIn  extends JPanel {
 
     private JTextField emailField;
@@ -28,9 +31,15 @@ public class LogIn  extends JPanel {
     private CardLayout initLayout;
     private Session dbSession;
 
+    /**
+     * Constructs a LogIn panel with the specified main panel, layout, and session.
+     *
+     * @param mainPanel the main panel
+     * @param mainLayout the main layout
+     * @param session the Hibernate session
+     */
     public LogIn(JPanel mainPanel, CardLayout mainLayout, Session session) throws HeadlessException {
         super();
-//        setLoginFormPanel();
         dbSession = session;
         servicePaciente = new ServicePaciente(session);
         initPanel = mainPanel;
@@ -39,6 +48,11 @@ public class LogIn  extends JPanel {
         setActionsButtons(mainPanel, mainLayout);
     }
 
+    /**
+     * Sets the display of the LogIn panel.
+     *
+     * @return the inner container panel
+     */
     private JPanel setDisplay(){
         JPanel innerContainer = new JPanel();
         innerContainer.setLayout(new BoxLayout(innerContainer,BoxLayout.Y_AXIS));
@@ -60,6 +74,10 @@ public class LogIn  extends JPanel {
 
 
     }
+
+    /**
+     * Initializes the components of the LogIn panel.
+     */
     private void instanceComponents(){
         loginFormPanel = new JPanel();
 
@@ -76,9 +94,10 @@ public class LogIn  extends JPanel {
         iniciarSesionButton = new JButton("Iniciar sesión");
     }
 
+    /**
+     * Sets up the buttons form panel.
+     */
     private void setButtonsFormPanel(){
-//        registrarButton.setSize(10,10);
-//        iniciarSesionButton.setSize(10,10);
         registrarButton.setPreferredSize(new Dimension(150,50));
         iniciarSesionButton.setPreferredSize(new Dimension(150,50));
 
@@ -86,6 +105,10 @@ public class LogIn  extends JPanel {
         buttonsFormPanel.add(iniciarSesionButton);
         buttonsFormPanel.setLayout(new GridLayout());
     }
+
+    /**
+     * Sets up the login form panel.
+     */
     private void setLoginFormPanel(){
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension dim = new Dimension();
@@ -115,6 +138,11 @@ public class LogIn  extends JPanel {
 
     }
 
+    /**
+     * Appends the logo to the specified inner container.
+     *
+     * @param innerContainer the inner container panel
+     */
     private void appendLogo(JPanel innerContainer){
         try{
 
@@ -133,10 +161,15 @@ public class LogIn  extends JPanel {
         }
     }
 
+    /**
+     * Handles the login process.
+     *
+     * @return true if login is successful, false otherwise
+     */
     private boolean login(){
         String email = emailField.getText();
         String password = new String(passwordField.getPassword());
-        Paciente pacienteLogged = servicePaciente.askPacienteByEmailOrEmail(email);
+        Paciente pacienteLogged = servicePaciente.getPacienteByEmailOrDni(email);
         boolean result = false;
         if (pacienteLogged!=null){
             if (servicePaciente.isValidPassowrd(password,pacienteLogged.getPassword())){
@@ -158,6 +191,12 @@ public class LogIn  extends JPanel {
         return result;
     }
 
+    /**
+     * Sets the actions for the buttons.
+     *
+     * @param mainPanel the main panel
+     * @param mainLayout the main layout
+     */
     private void setActionsButtons(JPanel mainPanel, CardLayout mainLayout){
         iniciarSesionButton.addActionListener(new ActionListener() {
             @Override
