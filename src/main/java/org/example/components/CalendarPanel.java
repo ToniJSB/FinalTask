@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -241,11 +240,8 @@ public class CalendarPanel extends JPanel {
                     boton.setForeground(Color.DARK_GRAY); // Días del mes anterior en gris
                     boton.setEnabled(false); // Deshabilitar botones de días no pertenecientes al mes actual
                 }
-                boton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        showReprogramaDailyPlan(finalFechaActual);
-                    }
+                boton.addActionListener((ActionEvent e) -> {
+                    showReprogramaDailyPlan(finalFechaActual);
                 });
 
             } else {
@@ -253,12 +249,9 @@ public class CalendarPanel extends JPanel {
                     boton.setForeground(Color.DARK_GRAY); // Días del mes anterior en gris
                     boton.setEnabled(false); // Deshabilitar botones de días no pertenecientes al mes actual
                 }
-                boton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-//                        boton.setBackground(Color.GREEN);
-                        showDailyPlan(finalFechaActual);
-                    }
+                boton.addActionListener((ActionEvent e) -> {
+                    //                        boton.setBackground(Color.GREEN);
+                    showDailyPlan(finalFechaActual);
                 });
             }
 

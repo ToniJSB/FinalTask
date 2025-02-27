@@ -1,34 +1,39 @@
 package org.example.components;
 
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.time.LocalDate;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
 import org.example.Constants;
-import org.example.Utils;
 import org.example.models.Cita;
-import org.example.models.Medico;
 import org.example.service.ServiceCita;
 import org.example.service.ServiceMedico;
 import org.hibernate.Session;
 
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import java.awt.*;
-import java.awt.event.*;
-import java.time.LocalDate;
-import java.util.Date;
 
 /**
  * The Calendar class represents a calendar component that displays daily plans and allows for reprogramming appointments.
  */
 public class Calendar extends JPanel {
-    private LocalDate fechaActual;
+    private final LocalDate fechaActual;
     private CalendarPanel panelCalendarioQ;
     private DisplayLayout parentDisplay;
     private JPanel fullContainer;
     private DailyPlan dailyPlan;
     private JTextField medicoField;
     private Medicos medicosComponent;
-    private ServiceCita serviceCita;
-    private ServiceMedico serviceMedico;
+    private final ServiceCita serviceCita;
+    private final ServiceMedico serviceMedico;
     private Cita cita;
     private JFrame window;
 
@@ -158,11 +163,8 @@ public class Calendar extends JPanel {
         fullContainer.add(calendarMedicoContainer, BorderLayout.CENTER);
         fullContainer.add(dailyPlan);
 
-        openMedicoSelector.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ((CardLayout)contenedor.getLayout()).show(contenedor,"MEDICOS");
-            }
+        openMedicoSelector.addActionListener((ActionEvent e) -> {
+            ((CardLayout)contenedor.getLayout()).show(contenedor,"MEDICOS");
         });
         add(medicosComponent, "MEDICOS");
         add(fullContainer, "CALENDAR");

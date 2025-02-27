@@ -1,13 +1,12 @@
 package org.example;
 
-import com.formdev.flatlaf.FlatLightLaf;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import org.example.components.*;
 import org.example.dao.AccessDB;
 import org.example.models.Medico;
-import org.example.models.Paciente;
+
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -24,7 +23,7 @@ import java.util.List;
  * Main application class for the Hospital Tramuntana system.
  */
 public class App {
-    private AccessDB accessDB;
+    private final AccessDB accessDB;
     private Session dbSession;
 
     /**
@@ -200,8 +199,8 @@ public class App {
     private static void cambiarFuenteComponentes(Container contenedor, Font fuente) {
         for (Component componente : contenedor.getComponents()) {
             componente.setFont(fuente);
-            if (componente instanceof Container) {
-                cambiarFuenteComponentes((Container) componente, fuente); // Recursividad para contenedores anidados
+            if (componente instanceof Container container) {
+                cambiarFuenteComponentes(container, fuente); // Recursividad para contenedores anidados
             }
         }
     }

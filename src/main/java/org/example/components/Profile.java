@@ -163,7 +163,6 @@ public class Profile extends JPanel {
             JButton cancelarBtn = new JButton();
             JButton reprogramadoBtn = new JButton();
             JPanel btnsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-            System.out.println(value);
             Cita cita = serviceCita.askCitaById(Integer.parseInt("1"));
             cancelarBtn.setOpaque(true);
             cancelarBtn.addActionListener(new ActionListener() {

@@ -7,7 +7,6 @@ import org.example.models.EstadoCita;
 import org.example.models.Medico;
 import org.example.models.TipoCita;
 import org.example.service.ServiceCita;
-import org.example.service.ServiceMedico;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -22,11 +21,10 @@ import java.awt.*;
  * The DailyPlan class represents a panel for displaying the daily plan of appointments.
  */
 public class DailyPlan extends JPanel {
-    private LocalDate dayDate;
+    private final LocalDate dayDate;
     private DisplayLayout fullAppDisplay;
     private List<Cita> citasByDayDate;
-    private ServiceCita serviceCita;
-    private ServiceMedico serviceMedico;
+    private final ServiceCita serviceCita;
     private Medico medicoOfDay;
     private Cita cita;
     private JPanel container;

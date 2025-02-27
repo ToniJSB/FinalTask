@@ -1,8 +1,9 @@
 package org.example.dao;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
+import java.time.LocalTime;
+import java.util.Date;
+import java.util.List;
+
 import org.example.models.Cita;
 import org.example.models.EstadoCita;
 import org.example.models.Medico;
@@ -10,19 +11,29 @@ import org.example.models.Paciente;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import java.time.LocalTime;
-import java.util.Date;
-import java.util.List;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 
 public class DaoCita {
     private Session dbSession;
     public DaoCita(Session session) {
         dbSession = session;
     }
+
+    /**
+     * Retrieves the database session.
+     * @return the current database session
+     */
     public Session getDbSession(){
         return dbSession;
     }
 
+    /**
+     * Retrieves a list of Citas for a given day.
+     * @param date the date of the Citas
+     * @return a list of Cita objects
+     */
     public List<Cita> getCitasByDay(Date date){
         CriteriaBuilder criteriaBuilder = dbSession.getCriteriaBuilder();
         CriteriaQuery<Cita> criteriaQuery = criteriaBuilder.createQuery(Cita.class);
@@ -30,6 +41,13 @@ public class DaoCita {
         criteriaQuery.select(citasExistentes).where(criteriaBuilder.equal(citasExistentes.get("fechaCita"), date));
         return dbSession.createQuery(criteriaQuery).getResultList();
     }
+
+    /**
+     * Retrieves a list of Citas for a given day with a specific doctor available.
+     * @param date the date of the Citas
+     * @param medico the Medico whose availability is to be checked
+     * @return a list of Cita objects
+     */
     public List<Cita> getCitasByDayWithDoctorAvailable(Date date, Medico medico){
         CriteriaBuilder criteriaBuilder = dbSession.getCriteriaBuilder();
         CriteriaQuery<Cita> criteriaQuery = criteriaBuilder.createQuery(Cita.class);
@@ -45,6 +63,14 @@ public class DaoCita {
                             )));
         return dbSession.createQuery(criteriaQuery).getResultList();
     }
+
+    /**
+     * Retrieves a Cita by date, time, and doctor.
+     * @param date the date of the Cita
+     * @param time the time of the Cita
+     * @param medico the Medico for the Cita
+     * @return the Cita object if found, null otherwise
+     */
     public Cita getCitasByDateTimeWithDoctor(Date date, LocalTime time, Medico medico){
         CriteriaBuilder criteriaBuilder = dbSession.getCriteriaBuilder();
         CriteriaQuery<Cita> criteriaQuery = criteriaBuilder.createQuery(Cita.class);
@@ -58,6 +84,11 @@ public class DaoCita {
         return dbSession.createQuery(criteriaQuery).getSingleResultOrNull();
     }
 
+    /**
+     * Retrieves a list of Citas for a given Paciente.
+     * @param paciente the Paciente whose Citas are to be retrieved
+     * @return a list of Cita objects
+     */
     public List<Cita> getCitasFromPaciente(Paciente paciente){
         CriteriaBuilder criteriaBuilder = dbSession.getCriteriaBuilder();
         CriteriaQuery<Cita> criteriaQuery = criteriaBuilder.createQuery(Cita.class);
@@ -75,6 +106,10 @@ public class DaoCita {
         return dbSession.createQuery(criteriaQuery).getResultList();
     }
 
+    /**
+     * Saves a new Cita to the database.
+     * @param cita the Cita object to be saved
+     */
     public void saveCita(Cita cita){
         Transaction transaction = dbSession.getTransaction();
         transaction.begin();
@@ -82,6 +117,10 @@ public class DaoCita {
         transaction.commit();
     }
 
+    /**
+     * Updates an existing Cita in the database.
+     * @param cita the Cita object to be updated
+     */
     public void update(Cita cita) {
         Transaction transaction = dbSession.getTransaction();
         transaction.begin();
@@ -89,7 +128,11 @@ public class DaoCita {
         transaction.commit();
     }
 
-
+    /**
+     * Retrieves a Cita by its ID.
+     * @param id the ID of the Cita
+     * @return the Cita object if found, null otherwise
+     */
     public Cita getCitasById(int id) {
         CriteriaBuilder criteriaBuilder = dbSession.getCriteriaBuilder();
         CriteriaQuery<Cita> criteriaQuery = criteriaBuilder.createQuery(Cita.class);

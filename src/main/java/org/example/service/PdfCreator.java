@@ -58,9 +58,7 @@ public class PdfCreator {
 
 
             String fileName = getUniqueFileName(paciente.getNombre());
-            System.out.println(fileName);
             String filePath = Constants.PDF_FOLDER+"/" + fileName;
-            System.out.println(filePath);
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
             document.open();
             document.add(new Paragraph("Paciente"));
@@ -96,9 +94,7 @@ public class PdfCreator {
 
 
             String fileName = getUniqueFileName(paciente.getNombre() + "_" + historialMedico.getFechaVisita().toString());
-            System.out.println(fileName);
             String filePath = Constants.PDF_FOLDER+"/" + fileName;
-            System.out.println(filePath);
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
             document.open();
             document.add(new Paragraph("Paciente"));

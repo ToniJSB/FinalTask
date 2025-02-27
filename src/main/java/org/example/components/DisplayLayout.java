@@ -13,7 +13,6 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -26,7 +25,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 
@@ -39,7 +37,6 @@ import org.example.models.Paciente;
  */
 public class DisplayLayout extends JPanel{
     private JPanel aside;
-    private JPanel innerAside;
     private JPanel body;
     private JPanel bottom;
     private JPanel top;
@@ -68,13 +65,10 @@ public class DisplayLayout extends JPanel{
         body.add(panel,constraint);
         for (JButton button : asideButtons){
             if (button.getText().toUpperCase().equals(constraint)){
-                button.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        ((CardLayout)body.getLayout()).show(body,constraint);
-                        body.revalidate();
-                        body.repaint();
-                    }
+                button.addActionListener((ActionEvent e) -> {
+                    ((CardLayout)body.getLayout()).show(body,constraint);
+                    body.revalidate();
+                    body.repaint();
                 });
             }
         }
