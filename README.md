@@ -92,7 +92,7 @@ cd hospital-tramuntana
 mvn clean install
 ```
 Uso
-Configura la ruta de acceso a la base de datos, en el fichero [Constants](src/main/java/org/example/Constants.java) la variable "PDF_PATH" especifica donde almacenar los documentos PDF. Recomendamos cambiarlo a la ruta de descargas o al escritorio del equipo en el que se vaya a ejecutar. 
+Configura la ruta de acceso a la base de datos en el [fichero de configuración de hibernate](src/main/resources/hibernate.cfg.xml), en el fichero [Constants](src/main/java/org/example/Constants.java) la variable "PDF_PATH" especifica donde almacenar los documentos PDF. Recomendamos cambiarlo a la ruta de descargas o al escritorio del equipo en el que se vaya a ejecutar. 
 **En caso de no modificarlo no impedirá su uso.**
 
 ### Licencia
