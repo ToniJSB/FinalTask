@@ -34,7 +34,7 @@ public class DailyPlan extends JPanel {
         this.serviceCita = serviceCita;
         fullAppDisplay = appDisplay;
         medicoOfDay = medico;
-        citasByDayDate = serviceCita.askCitasByDayWithMedico(Utils.DateFormat.asDate(dayDate), medicoOfDay);
+        citasByDayDate = serviceCita.askCitasByDayWithMedicoAllowed(Utils.DateFormat.asDate(dayDate), medicoOfDay);
         setDisplay();
     }
     public DailyPlan(LocalDate day,ServiceCita serviceCita, Cita cita) {
@@ -43,13 +43,13 @@ public class DailyPlan extends JPanel {
         this.serviceCita = serviceCita;
         this.cita = cita;
         medicoOfDay = cita.getMedico();
-        citasByDayDate = serviceCita.askCitasByDayWithMedico(Utils.DateFormat.asDate(dayDate), medicoOfDay);
+        citasByDayDate = serviceCita.askCitasByDayWithMedicoAllowed(Utils.DateFormat.asDate(dayDate), medicoOfDay);
         setDisplay();
     }
 
     public void setMedicoOfDay(Medico medicoOfDay) {
         this.medicoOfDay = medicoOfDay;
-        citasByDayDate = serviceCita.askCitasByDayWithMedico(Utils.DateFormat.asDate(dayDate), medicoOfDay);
+        citasByDayDate = serviceCita.askCitasByDayWithMedicoAllowed(Utils.DateFormat.asDate(dayDate), medicoOfDay);
         revalidate();
         repaint();
     }
@@ -131,7 +131,7 @@ public class DailyPlan extends JPanel {
                             JFrame window = Utils.obtenerFrameDesdeComponente(container);
                             window.dispose();
                         }else{
-                            serviceCita.createCita(date,medicoOfDay,time, TipoCita.VIDEOLLAMADA);
+                            serviceCita.createCita(date,medicoOfDay,time, TipoCita.PRESENCIAL);
                             fullAppDisplay.getBody().repaint();
                             fullAppDisplay.getBody().revalidate();
                         }
@@ -151,7 +151,7 @@ public class DailyPlan extends JPanel {
 
                 // Establecer la posición del diálogo
                 noti.setLocation(x, y);
-                citasByDayDate = serviceCita.askCitasByDayWithMedico(date, medicoOfDay);
+                citasByDayDate = serviceCita.askCitasByDayWithMedicoAllowed(date, medicoOfDay);
                 remove(container);
                 setDisplay();
             }

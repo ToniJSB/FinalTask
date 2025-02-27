@@ -6,9 +6,6 @@ import jakarta.persistence.criteria.Root;
 import org.example.models.Paciente;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.query.*;
-
-import java.sql.ResultSet;
 
 public class DaoPaciente {
     private Session dbSession;
@@ -20,11 +17,14 @@ public class DaoPaciente {
         return false;
     }
 
-    public Paciente getPacienteByEmail(String email){
+    public Paciente getPacienteByEmailOrDNI(String email){
         CriteriaBuilder criteriaBuilder = dbSession.getCriteriaBuilder();
         CriteriaQuery<Paciente> criteriaQuery = criteriaBuilder.createQuery(Paciente.class);
         Root<Paciente> paciente = criteriaQuery.from(Paciente.class);
-        criteriaQuery.select(paciente).where(criteriaBuilder.equal(paciente.get("email"), email));
+        criteriaQuery.select(paciente).where(criteriaBuilder.or(
+                criteriaBuilder.equal(paciente.get("email"), email),
+                criteriaBuilder.equal(paciente.get("dni"), email)
+        ));
         return dbSession.createQuery(criteriaQuery).getSingleResultOrNull();
     }
     public Paciente getPacienteById(int id){

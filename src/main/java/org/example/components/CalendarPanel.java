@@ -141,7 +141,7 @@ public class CalendarPanel extends JPanel {
 
         // Panel del calendario
         panelCalendario.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        panelCalendario.setBackground(new Color(94,168,211));
+        panelCalendario.setBackground(Constants.Colors.ASIDE_BACKGROUND);
         calendarContainer.add(panelCalendario, BorderLayout.CENTER);
         add(calendarContainer);
         actualizarCalendario();

@@ -110,7 +110,7 @@ public class SignIn extends JPanel {
         addField(gbc, row++, "DNI* (9 caracteres):", txtDni);
         addField(gbc, row++, "Email*:", txtEmail);
         addField(gbc, row++, "Contraseña*:", txtPassword);
-        addField(gbc, row++, "Condirmar contraseña*:", txtConfirmPassword);
+        addField(gbc, row++, "Confirmar contraseña*:", txtConfirmPassword);
         addField(gbc, row++, "Dirección:", txtDireccion);
         addField(gbc, row++, "Teléfono:", txtTelefono);
         addField(gbc, row++, "Fecha de nacimiento:", txtBirdthDayDate);

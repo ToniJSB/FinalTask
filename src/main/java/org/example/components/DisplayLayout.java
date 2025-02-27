@@ -1,5 +1,6 @@
 package org.example.components;
 
+import org.example.Constants;
 import org.example.Utils;
 import org.example.models.Paciente;
 
@@ -33,13 +34,14 @@ public class DisplayLayout extends JPanel{
     public void appendBody(JPanel panel, String constraint){
         body.add(panel,constraint);
         for (JButton button : asideButtons){
+//            button.setBackground(Constants.Colors.BUTTON_ASIDE_BACKGROUND);
             if (button.getText().toUpperCase().equals(constraint)){
                 button.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         ((CardLayout)body.getLayout()).show(body,constraint);
-                        body.repaint();
                         body.revalidate();
+                        body.repaint();
                     }
                 });
             }
@@ -52,10 +54,14 @@ public class DisplayLayout extends JPanel{
 
     private void setDisplayLayout(){
         top = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
 //        innerAside = new JPanel(new FlowLayout(FlowLayout.CENTER,15,10));
         aside = new JPanel();
-        aside.setLayout(new BoxLayout(aside, BoxLayout.Y_AXIS));
+
         body = new JPanel(new CardLayout());
+//        body.setBorder(new BorderTopLeft(5, Constants.Colors.BORDER_DIVIDER)); // Grosor: 5px, Color: Rojo
+        body.setBorder(new MatteBorder(5,5,-1,-1,Constants.Colors.BORDER_DIVIDER));
+
         bottom = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         setHeader();
@@ -73,11 +79,13 @@ public class DisplayLayout extends JPanel{
 
     }
     private void setAside(){
-
+        aside.setLayout(new BoxLayout(aside, BoxLayout.Y_AXIS));
         aside.setBorder(BorderFactory.createEmptyBorder(15,15,15,15));
-        aside.setBackground(new Color(28,73,100));
+        aside.setBackground(Constants.Colors.ASIDE_BACKGROUND);
         for (JButton boton : asideButtons){
-
+            boton.setAlignmentX(Component.LEFT_ALIGNMENT);
+            boton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+            boton.setBackground(Constants.Colors.BUTTON_ASIDE_BACKGROUND);
             boton.setMargin(new Insets(5,5,5,5));
             aside.add(boton);
         }
@@ -90,8 +98,10 @@ public class DisplayLayout extends JPanel{
         ImageIcon imageIcon = new ImageIcon(scaledImage);
 
         JLabel logoLabel = new JLabel("Hospital Tramuntana",imageIcon,SwingConstants.LEFT);
-
-        top.setBorder(new MatteBorder(-1,-1,2,-1,Color.BLACK));
+        Font fHeader = logoLabel.getFont();
+        fHeader.deriveFont(Font.BOLD,1000000f);
+        logoLabel.setFont(fHeader);
+//        top.setBorder(new MatteBorder(-1,-1,2,-1,Color.BLACK));
         top.add(logoLabel);
 
     }

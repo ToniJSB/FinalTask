@@ -34,8 +34,7 @@ public class App {
         accessDB = new AccessDB();
         openSession();
         createMedicos();
-        Font fuente = new Font("Verdana", Font.BOLD, 25);
-        cambiarFuenteComponentes(frame, fuente);
+        cambiarFuenteComponentes(frame, Constants.APP_FONT_CUSTOM);
         frame.add(initRouting(dbSession));
         frame.setVisible(true);
 

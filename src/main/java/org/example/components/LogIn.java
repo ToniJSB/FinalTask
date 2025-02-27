@@ -1,17 +1,15 @@
 package org.example.components;
 
-import org.example.App;
 import org.example.Constants;
+import org.example.Utils;
 import org.example.models.Paciente;
 import org.example.service.ServicePaciente;
 import org.hibernate.Session;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 public class LogIn  extends JPanel {
 
@@ -119,9 +117,8 @@ public class LogIn  extends JPanel {
 
     private void appendLogo(JPanel innerContainer){
         try{
-            File file = new File("./src/main/resources/img-Photoroom.png");
 
-            Image originalImage = ImageIO.read(file);
+            Image originalImage = Utils.getLogo();
 
             // Escalar la imagen
             int newWidth = 200;
@@ -139,7 +136,7 @@ public class LogIn  extends JPanel {
     private boolean login(){
         String email = emailField.getText();
         String password = new String(passwordField.getPassword());
-        Paciente pacienteLogged = servicePaciente.getPacienteByEmail(email);
+        Paciente pacienteLogged = servicePaciente.askPacienteByEmailOrEmail(email);
         boolean result = false;
         if (pacienteLogged!=null){
             if (servicePaciente.isValidPassowrd(password,pacienteLogged.getPassword())){

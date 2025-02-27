@@ -5,7 +5,6 @@ import org.example.dao.DaoPaciente;
 import org.example.models.Paciente;
 import org.hibernate.Session;
 
-import javax.swing.*;
 import java.time.LocalDate;
 import java.util.Locale;
 
@@ -50,8 +49,8 @@ public class ServicePaciente {
     public void getPacienteByDni(){
     }
 
-    public Paciente getPacienteByEmail(String email){
-        return daoPaciente.getPacienteByEmail(email);
+    public Paciente askPacienteByEmailOrEmail(String email){
+        return daoPaciente.getPacienteByEmailOrDNI(email);
 
     }
 

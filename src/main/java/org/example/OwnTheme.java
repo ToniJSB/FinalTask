@@ -7,10 +7,10 @@ import java.awt.*;
 
 public class OwnTheme extends FlatLightLaf {
     public OwnTheme() {
-        UIManager.put("Button.background", new Color(98, 182, 203));
-        UIManager.put("Panel.background", new Color(189, 233, 231));
-        UIManager.put("Button.hoverBackground", new Color(94,168,211));
-        UIManager.put("Table.alternateRowColor", new Color(94,168,211));
+        UIManager.put("Button.background", Constants.Colors.BUTTON_BACKGROUND);
+        UIManager.put("Panel.background", Constants.Colors.PANEL_BACKGROUND);
+        UIManager.put("Button.hoverBackground", Constants.Colors.HOVER_BUTTON);
+        UIManager.put("Table.alternateRowColor", Constants.Colors.ALTERNATE_TABLE);
 
     }
 

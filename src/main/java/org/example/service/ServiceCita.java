@@ -21,8 +21,8 @@ public class ServiceCita {
     public List<Cita> askCitasByDay(Date date) {
         return daoCita.getCitasByDay(date);
     }
-    public List<Cita> askCitasByDayWithMedico(Date date, Medico medico) {
-        return daoCita.getCitasByDayWithDoctor(date, medico);
+    public List<Cita> askCitasByDayWithMedicoAllowed(Date date, Medico medico) {
+        return daoCita.getCitasByDayWithDoctorAvailable(date, medico);
     }
     public List<Cita> askCitasByPaciente(Paciente paciente) {
         return daoCita.getCitasFromPaciente(paciente);
@@ -38,6 +38,10 @@ public class ServiceCita {
 
     public Session getSession(){
         return daoCita.getDbSession();
+    }
+
+    public Cita askCitaById(int id){
+        return daoCita.getCitasById(id);
     }
 
 

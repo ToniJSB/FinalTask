@@ -2,9 +2,7 @@ package org.example.dao;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import org.example.Utils;
 import org.example.models.Cita;
 import org.example.models.EstadoCita;
 import org.example.models.Medico;
@@ -12,7 +10,6 @@ import org.example.models.Paciente;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
@@ -33,7 +30,7 @@ public class DaoCita {
         criteriaQuery.select(citasExistentes).where(criteriaBuilder.equal(citasExistentes.get("fechaCita"), date));
         return dbSession.createQuery(criteriaQuery).getResultList();
     }
-    public List<Cita> getCitasByDayWithDoctor(Date date, Medico medico){
+    public List<Cita> getCitasByDayWithDoctorAvailable(Date date, Medico medico){
         CriteriaBuilder criteriaBuilder = dbSession.getCriteriaBuilder();
         CriteriaQuery<Cita> criteriaQuery = criteriaBuilder.createQuery(Cita.class);
         Root<Cita> citasExistentes = criteriaQuery.from(Cita.class);
@@ -41,7 +38,11 @@ public class DaoCita {
                 .where(
                     criteriaBuilder.and(
                         criteriaBuilder.equal(citasExistentes.get("fechaCita"), date),
-                        criteriaBuilder.equal(citasExistentes.get("medico"), medico)));
+                        criteriaBuilder.equal(citasExistentes.get("medico"), medico),
+                            criteriaBuilder.or(
+                                    criteriaBuilder.equal(citasExistentes.get("estado"),EstadoCita.REPROGRAMADA),
+                                    criteriaBuilder.equal(citasExistentes.get("estado"),EstadoCita.CANCELADA)
+                            )));
         return dbSession.createQuery(criteriaQuery).getResultList();
     }
     public Cita getCitasByDateTimeWithDoctor(Date date, LocalTime time, Medico medico){
@@ -89,4 +90,11 @@ public class DaoCita {
     }
 
 
+    public Cita getCitasById(int id) {
+        CriteriaBuilder criteriaBuilder = dbSession.getCriteriaBuilder();
+        CriteriaQuery<Cita> criteriaQuery = criteriaBuilder.createQuery(Cita.class);
+        Root<Cita> citasExistentes = criteriaQuery.from(Cita.class);
+        criteriaQuery.select(citasExistentes).where(criteriaBuilder.equal(citasExistentes.get("idCita"), id));
+        return dbSession.createQuery(criteriaQuery).getSingleResultOrNull();
+    }
 }

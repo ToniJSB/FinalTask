@@ -31,6 +31,7 @@ public class Cita {
     private LocalTime horaCita;
 
     @Column(name = "Estado")
+//    @Enumerated(EnumType.STRING)
     private EstadoCita estado;
 
     @Column(name = "Tipo")
